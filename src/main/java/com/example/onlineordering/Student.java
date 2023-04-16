@@ -1,3 +1,4 @@
+package com.example.onlineordering;
 import jakarta.persistence.*;
 
 @Entity
@@ -6,7 +7,7 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -20,18 +21,18 @@ public class Student {
 
     }
 
-    public Student(Long id, String firstName, String lastName, String email) {
+    public Student(Integer id, String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
