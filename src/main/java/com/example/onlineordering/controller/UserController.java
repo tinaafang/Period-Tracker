@@ -1,21 +1,16 @@
 package com.example.onlineordering.controller;
-import com.example.onlineordering.Student;
-import com.example.onlineordering.repository.StudentRepository;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.onlineordering.User;
+import com.example.onlineordering.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.http.HttpHeaders;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin(origins="*",maxAge = 4800,  allowedHeaders = "*",exposedHeaders = {})
-@RequestMapping(path="/api/student")
-public class StudentController {
+@RequestMapping(path="/api/user")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
 
 //    @Autowired
 //    private StudentRepository studentRepository;
@@ -28,11 +23,10 @@ public class StudentController {
 //    }
 //
 //    // create student rest API
-//    @PostMapping()
-//    public Object createStudent(@RequestBody Student student)  {
-//        Student newStudent =  studentRepository.save(student);
-//        return newStudent;
-//    }
+    @PostMapping()
+    public Object createUser(@RequestBody User user)  {
+        return  userService.create(user);
+    }
 
     // get student by id rest api
     @GetMapping()
