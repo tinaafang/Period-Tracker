@@ -10,15 +10,14 @@ const store = createStore({
     },
     actions: {
         test: () => {
-            fetch('http://localhost:8080/api/user', {
+            fetch('http://localhost:8090/api/registration/register', {
                 method: 'POST',
                 headers: {
                     'accept': "application/json",
                     'Content-Type': "application/json"
                 },
                 body: JSON.stringify({
-                    firstName:"a",
-                    lastName:'bao',
+                    password:'cptbtptp',
                     email:'tinafang114@gmail.com'
                 })
             })

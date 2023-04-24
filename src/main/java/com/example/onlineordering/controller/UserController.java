@@ -23,13 +23,14 @@ public class UserController {
 //    }
 //
 //    // create student rest API
-    @PostMapping()
+    @PostMapping(value = "/sign-up")
     public Object createUser(@RequestBody User user)  {
-        return  userService.create(user);
+
+        return  userService.signUpUser(user);
     }
 
     // get student by id rest api
-    @GetMapping()
+    @GetMapping(value = "/get")
 //    @ResponseBody
     public Object findStudentById() {
         return "6";

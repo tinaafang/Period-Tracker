@@ -1,9 +1,13 @@
 package com.example.onlineordering;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Entity
 @Table(name = "USER")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,13 +18,16 @@ public class User {
     private String email;
 
     @Column(name = "HASHED_PSWD")
-    private String hashedPassword;
+    private String password;
 
 
-    public User(Integer id, String email, String hashedPassword) {
+    @Column(name = "ENABLED")
+    private Boolean enabled;
+
+    public User(Integer id, String email, String password) {
         this.id = id;
         this.email = email;
-        this.hashedPassword = hashedPassword;
+        this.password = password;
     }
 
     public User() {
@@ -45,11 +52,42 @@ public class User {
     }
 
 
-    public String getHashedPassword() {
-        return hashedPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 }
