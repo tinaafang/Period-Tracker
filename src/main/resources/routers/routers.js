@@ -1,19 +1,18 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
-import Menu from "../views/Menu.vue";
-import Cart from "../views/Cart.vue";
+import App from "../App.vue";
+import CoverLetterTemplate from "../views/CoverLetterTemplate.vue";
 
 const routes = [
     {
         path: '/',
-        name: 'menu',
-        component: Menu
+        name: 'home',
+        component: App
     },
     {
-        path: '/about',
-        name: 'cart',
-        component: Cart
-    }
+        path: '/template/:templateId',
+        name: 'template-detail',
+        component: CoverLetterTemplate}
 ]
 
 const router = createRouter({

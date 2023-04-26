@@ -1,12 +1,19 @@
 import { createStore } from 'vuex'
 
+
 const store = createStore({
     state() {
         return {
-            count: 0
-        }
+            activeModal: {}
+        };
     },
     mutations: {
+        OPEN_MODAL(state,why) {
+            state.activeModal = why;
+        },
+        CLOSE_MODAL(state) {
+            state.activeModal = {};
+        }
     },
     actions: {
         test: () => {
@@ -28,9 +35,7 @@ const store = createStore({
 
     },
     getters: {
-        getCount(state) {
-            return state.count
-        }
+        getActiveModal: (state) => {return state.activeModal}
     }
 })
 

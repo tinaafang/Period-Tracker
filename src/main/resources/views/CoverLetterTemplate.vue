@@ -1,10 +1,11 @@
 <template>
+  {{this.$router.params.templateId}}
 
 </template>
 
 <script>
 export default {
-    name: "Menu"
+    name: "CoverLetterTemplate"
 }
 </script>
 

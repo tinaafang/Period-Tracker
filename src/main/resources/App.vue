@@ -1,21 +1,41 @@
 <template>
-    <div id="app">
-        <button @click="test">
-            hello world
-        </button>
-<!--        <router-view />-->
+    <div>
     </div>
+    <div>
+        <button @click="openAddCoverLetterTemplateModal">
+            Add
+        </button>
+        <button @click="CLOSE_MODAL">
+            close
+        </button>
+    </div>
+    <AddCoverLetterTemplateModal v-if="this.getActiveModal.name === 'ADD_COVER_LETTER_TEMPLATE_MODAL'"/>
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
+import AddCoverLetterTemplateModal from "./views/AddCoverLetterTemplateModal.vue";
 
 export default {
     name: 'App',
+    components: {AddCoverLetterTemplateModal},
+    computed: {
+        ...mapGetters([
+        "getActiveModal"])
+    },
     methods: {
-        ...mapActions([
-            "test"
-        ])
+        ...mapMutations([
+            "OPEN_MODAL",
+            "CLOSE_MODAL"
+        ]),
+        openAddCoverLetterTemplateModal() {
+            this.OPEN_MODAL({
+                name: "ADD_COVER_LETTER_TEMPLATE_MODAL",
+                data:"idk yet"
+            })
+        }
+    },
+    unmounted() {
     }
 }
 </script>
