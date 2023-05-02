@@ -1,4 +1,4 @@
-package com.example.onlineordering;
+package com.example.recipewebsite;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -7,14 +7,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@EnableJpaRepositories(basePackages = {"com.example.onlineordering.repository"})
+@EnableJpaRepositories(basePackages = {"com.example.recipewebsite.repository"})
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
-@ComponentScan({"com.example.onlineordering.repository", "com.example.onlineordering.controller",
-"com.example.onlineordering.service","com.example.onlineordering.security"})
-public class OnlineOrderingApplication {
+@ComponentScan({"com.example.recipewebsite.repository", "com.example.recipewebsite.controller",
+        "com.example.recipewebsite.service", "com.example.recipewebsite.security"})
+public class RecipeWebsiteApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OnlineOrderingApplication.class, args);
+        SpringApplication.run(RecipeWebsiteApplication.class, args);
     }
 
     @Bean

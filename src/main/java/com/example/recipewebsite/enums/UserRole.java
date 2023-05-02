@@ -1,4 +1,4 @@
-package com.example.onlineordering.enums;
+package com.example.recipewebsite.enums;
 
 public enum UserRole {
     USER,

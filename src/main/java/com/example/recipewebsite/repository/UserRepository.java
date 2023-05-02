@@ -1,7 +1,7 @@
-package com.example.onlineordering.repository;
+package com.example.recipewebsite.repository;
 
 
-import com.example.onlineordering.entity.User;
+import com.example.recipewebsite.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

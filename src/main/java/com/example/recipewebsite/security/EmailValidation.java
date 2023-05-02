@@ -1,4 +1,4 @@
-package com.example.onlineordering.security;
+package com.example.recipewebsite.security;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

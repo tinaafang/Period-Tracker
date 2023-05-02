@@ -1,4 +1,4 @@
-package com.example.onlineordering.service;
+package com.example.recipewebsite.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

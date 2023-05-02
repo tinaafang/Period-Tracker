@@ -1,10 +1,10 @@
-package com.example.onlineordering;
+package com.example.recipewebsite;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OnlineOrderingApplicationTests {
+class RecipeWebsiteApplicationTests {
 
     @Test
     void contextLoads() {

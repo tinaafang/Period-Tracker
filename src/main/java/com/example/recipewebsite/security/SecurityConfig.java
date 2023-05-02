@@ -1,6 +1,6 @@
-package com.example.onlineordering.security;
+package com.example.recipewebsite.security;
 
-import com.example.onlineordering.service.UserService;
+import com.example.recipewebsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

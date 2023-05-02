@@ -1,6 +1,6 @@
-package com.example.onlineordering.entity;
-import com.example.onlineordering.enums.UserRole;
-import com.example.onlineordering.security.EmailValidation;
+package com.example.recipewebsite.entity;
+import com.example.recipewebsite.enums.UserRole;
+import com.example.recipewebsite.security.EmailValidation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

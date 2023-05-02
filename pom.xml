@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>online-ordering</artifactId>
+    <artifactId>recipe-website</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>online-ordering</name>
-    <description>online-ordering</description>
+    <name>recipe-website</name>
+    <description>recipe-website</description>
     <properties>
         <java.version>17</java.version>
         <spring-cloud-gcp.version>4.1.3</spring-cloud-gcp.version>

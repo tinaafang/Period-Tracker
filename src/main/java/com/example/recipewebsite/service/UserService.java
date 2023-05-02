@@ -1,16 +1,14 @@
-package com.example.onlineordering.service;
+package com.example.recipewebsite.service;
 
-import com.example.onlineordering.entity.ConfirmationToken;
-import com.example.onlineordering.entity.User;
-import com.example.onlineordering.enums.UserRole;
-import com.example.onlineordering.repository.UserRepository;
+import com.example.recipewebsite.entity.ConfirmationToken;
+import com.example.recipewebsite.entity.User;
+import com.example.recipewebsite.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
