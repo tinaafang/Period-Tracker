@@ -1,5 +1,9 @@
-package com.example.onlineordering;
+package com.example.onlineordering.entity;
+import com.example.onlineordering.enums.UserRole;
+import com.example.onlineordering.security.EmailValidation;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,9 +18,19 @@ public class User implements UserDetails {
     @Column(name = "USR_NUM")
     private Integer id;
 
+    @NotNull
+    @NotEmpty
+    @Column(name = "USERNAME")
+    private String userName;
+
+    @NotNull
+    @NotEmpty
     @Column(name = "EMAIL")
     private String email;
 
+    @NotNull
+    @NotEmpty
+    @EmailValidation
     @Column(name = "HASHED_PSWD")
     private String password;
 
@@ -24,10 +38,15 @@ public class User implements UserDetails {
     @Column(name = "ENABLED")
     private Boolean enabled;
 
-    public User(Integer id, String email, String password) {
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+
+    public User(Integer id, String email, String password, UserRole userRole) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.userRole = userRole;
     }
 
     public User() {
@@ -89,5 +108,21 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

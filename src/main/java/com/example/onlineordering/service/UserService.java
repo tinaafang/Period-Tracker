@@ -1,7 +1,8 @@
 package com.example.onlineordering.service;
 
-import com.example.onlineordering.ConfirmationToken;
-import com.example.onlineordering.User;
+import com.example.onlineordering.entity.ConfirmationToken;
+import com.example.onlineordering.entity.User;
+import com.example.onlineordering.enums.UserRole;
 import com.example.onlineordering.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,23 +24,18 @@ public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
-
-
     @Autowired
     private ConfirmationTokenService confirmationTokenService;
-    private final static String USER_NOT_FOUND_MSG =
-            "user with email %s not found";
 
-
+    @Autowired
+    private EmailService emailService;
 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException(
-                                String.format(USER_NOT_FOUND_MSG, email)));
+                        new UsernameNotFoundException("Invalid email or password"));
     }
 
 
@@ -47,7 +44,8 @@ public class UserService implements UserDetailsService {
 //    }
 
 
-    public String signUpUser(User user) {
+    public String register(User user) {
+
         boolean userExists = userRepository
                 .findByEmail(user.getEmail())
                 .isPresent();
@@ -76,11 +74,44 @@ public class UserService implements UserDetailsService {
 
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-
+        //        boolean isValidEmail = emailValidator.
+//                test(request.getEmail());
+//
+//        if (!isValidEmail) {
+//            throw new IllegalStateException("email not valid");
+//        }
         return token;
     }
 
-    public int enableAppUser(String email) {
+    public void sendValidationEmail(String email, String token) {
+        String link = "http://localhost:8090/api/registration/confirm?token=" + token;
+
+        emailService.sendEmail("tinafang114@gmail.com","surprise!","<p>Hi there :D,<p><br><p>Click the link below to activate your account:<p><br><a href=http://localhost:8090/api/registration/confirm?token="+token+">activate</a><br><p>link will expire in 15 minutes");
+
+    }
+
+
+    public void confirmRegistration(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenService
+                .getToken(token)
+                .orElseThrow(() ->
+                        new IllegalStateException("token not found"));
+
+        if (confirmationToken.getConfirmedAt() != null) {
+            throw new IllegalStateException("email already confirmed");
+        }
+
+        LocalDateTime expiredAt = confirmationToken.getExpiredAt();
+
+        if (expiredAt.isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("token expired");
+        }
+
+        confirmationTokenService.setConfirmedAt(token);
+        enableAppUser(confirmationToken.getUser().getEmail());
+    }
+
+    private int enableAppUser(String email) {
         return userRepository.enableAppUser(email);
     }
 

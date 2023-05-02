@@ -1,18 +1,18 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
-import App from "../App.vue";
-import CoverLetterTemplate from "../views/CoverLetterTemplate.vue";
-
+import RecipeList from "../views/RecipeList.vue";
+import RecipeDetail from "../views/RecipeDetail.vue";
 const routes = [
     {
         path: '/',
-        name: 'home',
-        component: App
-    },
-    {
-        path: '/template/:templateId',
-        name: 'template-detail',
-        component: CoverLetterTemplate}
+        name: 'recipe-list',
+        component: RecipeList
+    }, {
+        path: '/:recipeId',
+        name: 'recipe-detail',
+        component: RecipeDetail
+
+    }
 ]
 
 const router = createRouter({

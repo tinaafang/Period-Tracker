@@ -1,6 +1,6 @@
 package com.example.onlineordering.service;
 
-import com.example.onlineordering.ConfirmationToken;
+import com.example.onlineordering.entity.ConfirmationToken;
 import com.example.onlineordering.repository.ConfirmationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
