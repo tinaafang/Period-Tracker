@@ -7,20 +7,21 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@EnableJpaRepositories(basePackages = {"com.example.recipewebsite.repository"})
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
-@ComponentScan({"com.example.recipewebsite.repository", "com.example.recipewebsite.controller",
-        "com.example.recipewebsite.service", "com.example.recipewebsite.security"})
+//@EnableJpaRepositories(basePackages = {"com.example.recipewebsite.repository"})
+//@SpringBootApplication()
+//@ComponentScan({"com.example.recipewebsite.repository", "com.example.recipewebsite.controller",
+//        "com.example.recipewebsite.service", "com.example.recipewebsite.security"})
+@SpringBootApplication
 public class RecipeWebsiteApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(RecipeWebsiteApplication.class, args);
     }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
 //    @Bean
 //    public WebMvcConfigurer corsConfigurer() {

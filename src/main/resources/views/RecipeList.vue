@@ -1,10 +1,17 @@
 <template>
-
+<button @click="test">test</button>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
-    name: "RecipeList"
+    name: "RecipeList",
+    methods: {
+        ...mapActions([
+            "test"
+        ])
+    }
 }
 </script>
 

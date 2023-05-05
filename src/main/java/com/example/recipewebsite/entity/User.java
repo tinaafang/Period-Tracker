@@ -7,11 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "USER")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +27,12 @@ public class User implements UserDetails {
 
     @NotNull
     @NotEmpty
-    @Column(name = "EMAIL")
+    @EmailValidation
+    @Column(name = "EMAIL",unique = true)
     private String email;
 
     @NotNull
     @NotEmpty
-    @EmailValidation
     @Column(name = "HASHED_PSWD")
     private String password;
 
@@ -38,20 +40,16 @@ public class User implements UserDetails {
     @Column(name = "ENABLED")
     private Boolean enabled;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinTable(
+            name="ASSOC_USR_ROL",
+            joinColumns={@JoinColumn(name="USR_NUM", referencedColumnName="USR_NUM")},
+            inverseJoinColumns={@JoinColumn(name="ROL_NUM", referencedColumnName="ROL_NUM")})
+    private List<Role> roles = new ArrayList<>();
 
 
-    public User(Integer id, String email, String password, UserRole userRole) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.userRole = userRole;
-    }
 
-    public User() {
 
-    }
 
     public Integer getId() {
         return id;
@@ -79,43 +77,21 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
 
-
-    @Override
     public String getUsername() {
         return null;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
-    public UserRole getUserRole() {
-        return userRole;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public String getUserName() {

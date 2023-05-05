@@ -35,7 +35,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapMutations("ui",[
             "CLOSE_MODAL"
         ]),
     },
