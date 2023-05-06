@@ -29,8 +29,8 @@
             <button type="submit" class="mt-4 btn-pers" @click="login">
                 Login
             </button>
-        <button type="submit" class="mt-4 btn-pers" @click="test">
-            test
+        <button type="submit" class="mt-4 btn-pers" @click="$router.push('/')">
+            go to home page
         </button>
     </div>
 </template>

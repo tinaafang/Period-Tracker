@@ -1,6 +1,6 @@
 <template>
-    <router-view></router-view>
     <Alert v-if="getActiveAlert.message"></Alert>
+    <router-view></router-view>
 </template>
 
 <script>

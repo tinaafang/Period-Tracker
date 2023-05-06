@@ -6,7 +6,7 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 const routes = [
     {
-        path: '/recipes',
+        path: '/',
         name: 'recipe-list',
         component: RecipeList
     }, {
@@ -15,7 +15,7 @@ const routes = [
         component: RecipeDetail
 
     }, {
-        path: '/',
+        path: '/login',
         name: 'login',
         component: Login
 

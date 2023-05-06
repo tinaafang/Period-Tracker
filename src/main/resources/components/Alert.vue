@@ -1,7 +1,7 @@
 <template>
-    <div class="alert show" :class="colorToClassName" role="alert">
+    <div class="alert alert-dismissible show center-block" :class="colorToClassName" role="alert">
         {{message}}
-        <button type="button" @click="CLOSE_ALERT">
+        <button type="button" class="btn-close" @click="CLOSE_ALERT">
         </button>
     </div>
 </template>
@@ -55,5 +55,14 @@ export default {
 <style scoped>
 .show {
     display: block !important;
+}
+.alert {
+    width:60%;
+    margin: auto;
+    text-align: center;
+    z-index: 1;
+    position: absolute;
+    top:1rem;
+    right: 20%;
 }
 </style>
