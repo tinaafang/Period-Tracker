@@ -60,7 +60,7 @@ export default {
     width:60%;
     margin: auto;
     text-align: center;
-    z-index: 1;
+    z-index: 99999;
     position: absolute;
     top:1rem;
     right: 20%;

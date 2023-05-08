@@ -6,7 +6,13 @@ export default {
     registerRequest:{
         userName:null,
         email:null,
-        password:null
+        password:null,
+        token:null
+    },
+    resetPasswordRequest:{
+        email:null,
+        password:null,
+        token:null
     }
 
 }

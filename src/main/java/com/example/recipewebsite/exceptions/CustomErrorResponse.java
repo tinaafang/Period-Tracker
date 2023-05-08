@@ -1,3 +1,4 @@
+package com.example.recipewebsite.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;

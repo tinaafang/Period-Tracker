@@ -1,14 +1,9 @@
 package com.example.recipewebsite.entity;
-import com.example.recipewebsite.enums.UserRole;
-import com.example.recipewebsite.security.EmailValidation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -27,7 +22,6 @@ public class User {
 
     @NotNull
     @NotEmpty
-    @EmailValidation
     @Column(name = "EMAIL",unique = true)
     private String email;
 
@@ -84,6 +78,10 @@ public class User {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public List<Role> getRoles() {

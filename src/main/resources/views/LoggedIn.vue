@@ -4,7 +4,7 @@
 
 <script>
 export default {
-    name: "RecipeDetail"
+    name: "LoggedIn"
 }
 </script>
 

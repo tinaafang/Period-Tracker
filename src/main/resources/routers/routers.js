@@ -1,21 +1,9 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
-import RecipeList from "../views/RecipeList.vue";
-import RecipeDetail from "../views/RecipeDetail.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
-const routes = [
-    {
+const routes = [{
         path: '/',
-        name: 'recipe-list',
-        component: RecipeList
-    }, {
-        path: '/:recipeId',
-        name: 'recipe-detail',
-        component: RecipeDetail
-
-    }, {
-        path: '/login',
         name: 'login',
         component: Login
 

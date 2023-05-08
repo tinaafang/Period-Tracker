@@ -1,12 +1,14 @@
 package com.example.recipewebsite.entity;
 
+import com.example.recipewebsite.enums.TokenPurpose;
 import jakarta.persistence.*;
+import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "CONFIRMATION_TOKEN")
+@Entity(name = "TOKEN")
 @Table
-public class ConfirmationToken {
+public class Token {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,8 @@ public class ConfirmationToken {
     @Column(name = "CONFIRMED_AT")
     private LocalDateTime confirmedAt;
 
+    @Column(name="PURPOSE")
+    private TokenPurpose purpose;
 
     public Integer getId() {
         return id;
@@ -76,5 +80,13 @@ public class ConfirmationToken {
 
     public void setExpiredAt(LocalDateTime expiredAt) {
         this.expiredAt = expiredAt;
+    }
+
+    public TokenPurpose getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(TokenPurpose purpose) {
+        this.purpose = purpose;
     }
 }

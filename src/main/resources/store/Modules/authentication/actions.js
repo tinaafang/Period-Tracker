@@ -4,14 +4,8 @@ import router from "../../../routers/routers";
 export default {
     login({state, commit}) {
         return helper.api("POST","/login",state.loginRequest)
-            .then(function(response) {
-                if(!response.ok) {
-                    let messagge = "Oops, something went wrong";
-                    if(response.status === 401) {
-                        messagge = "Unauthorized, please log in and try again"
-                    }
-                    commit("ui/OPEN_ALERT",{message:messagge,color:'red'},{root:true})
-                } else {
+            .then((response) => {
+                if(response) {
                     response.json().then(function(data) {
                         localStorage.removeItem('jwtToken');
                         const token = data.token;
@@ -19,40 +13,62 @@ export default {
                         commit("ui/OPEN_ALERT",{message:"You are now logged in",color:'green'},{root:true})
                     })
                 }
-
             });
     },
     test({state, commit}) {
         return helper.api("GET","/api/test",state.loginRequest)
-            .then(function(response) {
-                if(!response.ok) {
-                    let messagge = "Oops, something went wrong";
-                    if(response.status === 401) {
-                        messagge = "Unauthorized, please log in and try again"
-                    }
-                    commit("ui/OPEN_ALERT",{message:messagge,color:'red'},{root:true})
-                } else {
+            .then((response) => {
+                if(response) {
                     response.json().then(function(data) {
                         console.log(data);
                     })
                 }
-
             })
     },
     register({state, commit}) {
         return helper.api("POST","/register",state.registerRequest)
-            .then(response => {
-                debugger
-                console.log("success")
+            .then((response) => {
+                if(response) {
+                    commit("authentication/SEND_RESET_PASSWORD_EMAIL_SUCCESS",data.token,{root:true});
+                    const message = "A validation email has been sent and will be expired in 15 minutes, please follow instructions in the email to finish the registration."
+                    commit("ui/OPEN_ALERT",{message:message,color:'yellow'},{root:true});
+                }
             })
-            .catch(error => {
-                debugger
-                commit("OPEN_ALERT",{message:"sth went wrong",color:'red'})
-                console.log("error")
+    },
+    resendValidationEmail({state, commit}) {
+        return helper.api("POST","/register/resend?email="+state.registerRequest.email)
+            .then((response) => {
+                if(response) {
+                    response.json().then(function(data) {
+                        commit("authentication/SEND_RESET_PASSWORD_EMAIL_SUCCESS",data.token,{root:true});
+                        const message = "A validation email has been resent."
+                        commit("ui/OPEN_ALERT",{message:message,color:'yellow'},{root:true})
+                    })
+                }
             })
     },
     logout() {
         localStorage.removeItem("jwtToken");
         router.push('/');
-    }
+    },
+    sendResetPasswordEmail({state, commit}) {
+        return helper.api("GET","/reset-password/send-email?email="+state.resetPasswordRequest.email)
+            .then((response) => {
+                if(response) {
+                    response.json().then(function(data) {
+                        commit("authentication/SEND_RESET_PASSWORD_EMAIL_SUCCESS",data.token,{root:true});
+                    })
+                }
+            })
+    },
+    resetPassword({state, commit}) {
+        return helper.api("POST","/reset-password/reset",state.resetPasswordRequest)
+            .then((response) => {
+                if(response) {
+                    response.json().then(function(data) {
+                        console.log(data)
+                    })
+                }
+            })
+    },
 }

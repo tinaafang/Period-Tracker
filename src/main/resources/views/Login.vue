@@ -24,21 +24,26 @@
                 />
             </div>
             <div class="alternative-option mt-4">
-                Don't have an account? <a @click="$router.push('/register')">Register</a>
+                Don't have an account? <button @click="$router.push('/register')">Register</button>
             </div>
             <button type="submit" class="mt-4 btn-pers" @click="login">
                 Login
             </button>
+        <button type="submit" class="mt-4 btn-pers" @click="openResetPasswordMethod">
+            forgetPassword
+        </button>
         <button type="submit" class="mt-4 btn-pers" @click="$router.push('/')">
             go to home page
         </button>
     </div>
+    <reset-password-modal v-if="getActiveModal.name === 'RESET_PASSWORD_MODAL'"></reset-password-modal>
 </template>
 
 <script>
 
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import { createHelpers } from 'vuex-map-fields';
+import ResetPasswordModal from "../components/Modals/ResetPasswordModal.vue";
 
 // `fooModule` is the name of the Vuex module.
 const { mapFields } = createHelpers({
@@ -47,6 +52,7 @@ const { mapFields } = createHelpers({
 });
 export default {
     name: "Login",
+    components: {ResetPasswordModal},
     computed:{
             ...mapFields([
                 'loginRequest.email',
@@ -55,12 +61,23 @@ export default {
             ...mapGetters("authentication",[
                 "getLoginRequest"
             ]),
+        ...mapGetters("ui",[
+            "getActiveModal"
+        ]),
     },
     methods: {
         ...mapActions("authentication",[
             "login",
             "test"
         ]),
+        ...mapMutations("ui",[
+            "OPEN_MODAL"
+        ]),
+        openResetPasswordMethod() {
+            this.OPEN_MODAL({
+                name:'RESET_PASSWORD_MODAL'
+            })
+        }
 
     }
 }

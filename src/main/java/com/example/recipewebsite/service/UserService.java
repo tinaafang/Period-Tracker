@@ -1,9 +1,12 @@
 package com.example.recipewebsite.service;
 
+import com.example.recipewebsite.dto.ResetPasswordRequest;
 import com.example.recipewebsite.dto.UserDto;
-import com.example.recipewebsite.entity.ConfirmationToken;
+import com.example.recipewebsite.entity.Token;
 import com.example.recipewebsite.entity.Role;
 import com.example.recipewebsite.entity.User;
+import com.example.recipewebsite.enums.TokenPurpose;
+import com.example.recipewebsite.exceptions.BadRequestException;
 import com.example.recipewebsite.repository.RoleRepository;
 import com.example.recipewebsite.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,7 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    private ConfirmationTokenService confirmationTokenService;
+    private TokenService tokenService;
 
     @Autowired
     private EmailService emailService;
@@ -48,6 +50,7 @@ public class UserService implements UserDetailsService {
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(user.getEmail(),
                     user.getPassword(),
+                    user.isEnabled(),true,true,true,
                     mapRolesToAuthorities(user.getRoles()));
         }else{
             throw new UsernameNotFoundException("Invalid username or password.");
@@ -61,35 +64,31 @@ public class UserService implements UserDetailsService {
         return mapRoles;
     }
 
-    public List<UserDto> findAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream().map((user) -> convertEntityToDto(user))
-                .collect(Collectors.toList());
+    public User getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if(user == null) {
+            throw new BadRequestException("User not found");
+        }
+        return user;
     }
 
-    private UserDto convertEntityToDto(User user){
-        UserDto userDto = new UserDto();
-        userDto.setUserName(user.getUserName());
-        userDto.setEmail(user.getEmail());
-        return userDto;
-    }
+
 
     private Role checkRoleExist() {
         Role role = new Role();
-        role.setRole("ROLE_ADMIN");
+        role.setRole("ROLE_USER");
         return roleRepository.save(role);
     }
 
 
-    public String register(UserDto userDto) {
+
+
+    public String registrationBeforeConfirm(UserDto userDto) {
 
         User existingUser = userRepository.findByEmail(userDto.getEmail());
 
         if (existingUser != null) {
-            // TODO check of attributes are the same and
-            // TODO if email not confirmed send confirmation email.
-
-            throw new IllegalStateException("An account for that email already exists.");
+            throw new BadRequestException("An account for that email already exists.");
         }
 
         User user = new User();
@@ -103,31 +102,27 @@ public class UserService implements UserDetailsService {
         user.setRoles(Arrays.asList(role));
         user.setUserName(userDto.getUserName());
         user.setEmail(userDto.getEmail());
+        user.setEnabled(false);
 
         userRepository.save(user);
 
-        String token = UUID.randomUUID().toString();
 
-        ConfirmationToken confirmationToken = new ConfirmationToken();
-        confirmationToken.setCreatedAt(LocalDateTime.now());
-        confirmationToken.setExpiredAt(LocalDateTime.now().plusMinutes(15));
-        confirmationToken.setToken(token);
-        confirmationToken.setUser(user);
 
-        confirmationTokenService.saveConfirmationToken(
-                confirmationToken);
-        //        boolean isValidEmail = emailValidator.
-//                test(request.getEmail());
-//
-//        if (!isValidEmail) {
-//            throw new IllegalStateException("email not valid");
-//        }
-        return token;
+        String tokenStr = tokenService.generateToken();
+
+        Token token = new Token();
+        token.setCreatedAt(LocalDateTime.now());
+        token.setExpiredAt(LocalDateTime.now().plusMinutes(15));
+        token.setToken(tokenStr);
+        token.setUser(user);
+        token.setPurpose(TokenPurpose.ACCOUNT_ACTIVATION);
+
+        tokenService.saveToken(token);
+
+        sendValidationEmail(userDto.getEmail(),tokenStr);
+        return tokenStr;
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 
     public void sendValidationEmail(String email, String token) {
         String link = "http://localhost:8090/register/confirm?token=" + token;
@@ -136,29 +131,102 @@ public class UserService implements UserDetailsService {
 
     }
 
-
-    public void confirmRegistration(String token) {
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .getToken(token)
-                .orElseThrow(() ->
-                        new IllegalStateException("token not found"));
-
-        if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+    public void resendValidationEmail(String email) {
+        List<Token> tokens = tokenService.getTokensByEmail(email);
+        if(!tokens.isEmpty()) {
+            tokens.forEach(token -> {
+                if(TokenPurpose.ACCOUNT_ACTIVATION.equals(token.getPurpose()) && token.getExpiredAt().isAfter(LocalDateTime.now())) {
+                    token.setExpiredAt(LocalDateTime.now());
+                }
+            });
         }
 
-        LocalDateTime expiredAt = confirmationToken.getExpiredAt();
+        User user = getUserByEmail(email);
+        Token token = new Token();
+        token.setCreatedAt(LocalDateTime.now());
+        token.setExpiredAt(LocalDateTime.now().plusMinutes(15));
+        token.setUser(user);
+        token.setPurpose(TokenPurpose.ACCOUNT_ACTIVATION);
+        String tokenStr = tokenService.generateToken();
+        token.setToken(tokenStr);
+        tokenService.saveToken(token);
 
-        if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
-        }
-
-        confirmationTokenService.setConfirmedAt(token);
-        enableAppUser(confirmationToken.getUser().getEmail());
+        sendValidationEmail(email,tokenStr);
     }
 
-    private int enableAppUser(String email) {
-        return userRepository.enableUser(email);
+    public String sendResetPasswordEmail(String email) {
+        List<Token> tokens = tokenService.getTokensByEmail(email);
+        if(!tokens.isEmpty()) {
+            tokens.forEach(token -> {
+                if(TokenPurpose.PASSWORD_RESET.equals(token.getPurpose()) && token.getExpiredAt().isAfter(LocalDateTime.now())) {
+                    token.setExpiredAt(LocalDateTime.now());
+                    tokenService.saveToken(token);
+                }
+            });
+        }
+
+        User user = getUserByEmail(email);
+        Token token = new Token();
+        token.setCreatedAt(LocalDateTime.now());
+        token.setExpiredAt(LocalDateTime.now().plusMinutes(15));
+        token.setUser(user);
+        token.setPurpose(TokenPurpose.PASSWORD_RESET);
+        String tokenStr = tokenService.generateToken();
+        token.setToken(tokenStr);
+        tokenService.saveToken(token);
+
+        String link = "http://localhost:8090/reset-password/confirm?token=" + tokenStr;
+
+        emailService.sendEmail("tinafang114@gmail.com","Password Reset!","<p>Hi there :D,<p><br><p>Click the link below to reset your password:<p><br><a href="+link+">activate</a><br><p>link will expire in 15 minutes");
+        return tokenStr;
+    }
+
+
+
+
+
+    public void resetPasswordConfirm(String tokenStr) {
+        Token token = tokenService.getToken(tokenStr);
+        if (token.getExpiredAt() == null || token.getExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("invalid token");
+        }
+        token.setConfirmedAt(LocalDateTime.now());
+        tokenService.saveToken(token);
+
+
+    }
+
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        Token token = tokenService.getToken(resetPasswordRequest.getToken());
+        if (token == null || token.getConfirmedAt() == null) {
+            throw new BadRequestException("invalid token");
+        }
+        User user = getUserByEmail(resetPasswordRequest.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode(resetPasswordRequest.getPassword()));
+        userRepository.save(user);
+
+    }
+
+
+
+    public void confirmRegistration(String tokenStr) {
+        Token token = tokenService.getToken(tokenStr);
+
+        if (TokenPurpose.ACCOUNT_ACTIVATION.equals(token.getPurpose()) && token.getConfirmedAt() != null) {
+            throw new BadRequestException("The account associated with this email is already confirmed");
+        }
+
+
+        if (token.getExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("token expired");
+        }
+
+        tokenService.setConfirmedAt(tokenStr);
+        enableAppUser(token.getUser().getEmail());
+    }
+
+    private void enableAppUser(String email) {
+        userRepository.enableUser(email);
     }
 
 }

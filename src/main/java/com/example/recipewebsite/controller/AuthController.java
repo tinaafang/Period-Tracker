@@ -2,6 +2,7 @@ package com.example.recipewebsite.controller;
 
 
 import com.example.recipewebsite.dto.AuthResponseDto;
+import com.example.recipewebsite.dto.ResetPasswordRequest;
 import com.example.recipewebsite.dto.UserDto;
 import com.example.recipewebsite.security.JwtUtil;
 import com.example.recipewebsite.service.UserService;
@@ -11,11 +12,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 @RestController
 @CrossOrigin(origins="*",maxAge = 4800,  allowedHeaders = "*",exposedHeaders = {})
@@ -29,27 +28,6 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtTokenProvider;
-
-
-
-//    @GetMapping("index")
-//    public String home(){
-//        return "index";
-//    }
-//
-//    @GetMapping("/login")
-//    public String loginForm() {
-//        return "login";
-//    }
-//
-//    // handler method to handle user registration request
-//    @GetMapping("register")
-//    public String showRegistrationForm(Model model){
-//        UserDto user = new UserDto();
-//        model.addAttribute("user", user);
-//        return "register";
-//    }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto) {
@@ -68,29 +46,42 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public UserDto registration(@RequestBody UserDto userDto){
-        String token = userService.register(userDto);
-        userService.sendValidationEmail(userDto.getEmail(), token);
-        return userDto;
+    public LinkedHashMap<String,String>  registrationBeforeConfirm(@RequestBody UserDto userDto){
+        String token = userService.registrationBeforeConfirm(userDto);
+        LinkedHashMap<String,String> tokenResponse = new LinkedHashMap<>();
+        tokenResponse.put("token",token);
+        return tokenResponse;
     }
 
-//    @GetMapping("/users")
-//    public String listRegisteredUsers(Model model){
-//        List<UserDto> users = userService.findAllUsers();
-//        model.addAttribute("users", users);
-//        return "users";
-//    }
 
     @GetMapping(path = "/register/confirm")
     public void confirm(@RequestParam String token) {
         userService.confirmRegistration(token);
     }
 
-    @GetMapping(path = "/api/test")
-    public UserDto test() {
-        UserDto testUser = new UserDto();
-        testUser.setUserName("worked!");
-        return testUser;
+    @GetMapping(path = "/register/resend")
+    public void resendValidationEmail(@RequestParam String email) {
+        userService.resendValidationEmail(email);
     }
+
+    @GetMapping(path = "/reset-password")
+    public LinkedHashMap<String,String> ResetPasswordBeforeConfirm(@RequestParam String email) {
+        String token = userService.sendResetPasswordEmail(email);
+        LinkedHashMap<String,String> tokenResponse = new LinkedHashMap<>();
+        tokenResponse.put("token",token);
+        return tokenResponse;
+    }
+
+    @GetMapping(path = "/reset-password/confirm")
+    public void resetPasswordConfirm(@RequestParam String token) {
+        userService.resetPasswordConfirm(token);
+    }
+
+    @PostMapping(path = "/reset-password/reset")
+    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        userService.resetPassword(resetPasswordRequest);
+    }
+
+
 
 }
