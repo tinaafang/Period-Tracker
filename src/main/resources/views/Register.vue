@@ -1,4 +1,5 @@
 <template>
+    {{getRegisterRequest}}
     <div class="container">
         <h2 class="mb-3">Register</h2>
         <div class="input">

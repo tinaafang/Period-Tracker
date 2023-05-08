@@ -9,6 +9,7 @@ import com.example.recipewebsite.enums.TokenPurpose;
 import com.example.recipewebsite.exceptions.BadRequestException;
 import com.example.recipewebsite.repository.RoleRepository;
 import com.example.recipewebsite.repository.UserRepository;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -83,7 +85,7 @@ public class UserService implements UserDetailsService {
 
 
 
-    public String registrationBeforeConfirm(UserDto userDto) {
+    public String registrationBeforeConfirm(UserDto userDto)  {
 
         User existingUser = userRepository.findByEmail(userDto.getEmail());
 
@@ -126,12 +128,21 @@ public class UserService implements UserDetailsService {
 
     public void sendValidationEmail(String email, String token) {
         String link = "http://localhost:8090/register/confirm?token=" + token;
-
-        emailService.sendEmail("tinafang114@gmail.com","surprise!","<p>Hi there :D,<p><br><p>Click the link below to activate your account:<p><br><a href="+link+">activate</a><br><p>link will expire in 15 minutes");
-
+        Context context = new Context();
+        context.setVariable("link", link);
+        String htmlTemplate = emailService.buildTemplate("AccountValidationEmail", context);
+        emailService.sendEmail(email,"Verify Your Account",htmlTemplate);
     }
 
-    public void resendValidationEmail(String email) {
+    public void sendResetPasswordEmail(String email, String token) {
+        String link = "http://localhost:8090/reset-password/confirm?token=" + token;
+        Context context = new Context();
+        context.setVariable("link", link);
+        String htmlTemplate = emailService.buildTemplate("PasswordResetEmail", context);
+        emailService.sendEmail(email,"Password Reset",htmlTemplate);
+    }
+
+    public void resendValidationEmail(String email)  {
         List<Token> tokens = tokenService.getTokensByEmail(email);
         if(!tokens.isEmpty()) {
             tokens.forEach(token -> {
@@ -154,7 +165,7 @@ public class UserService implements UserDetailsService {
         sendValidationEmail(email,tokenStr);
     }
 
-    public String sendResetPasswordEmail(String email) {
+    public String sendResetPasswordEmail(String email)  {
         List<Token> tokens = tokenService.getTokensByEmail(email);
         if(!tokens.isEmpty()) {
             tokens.forEach(token -> {
@@ -175,9 +186,8 @@ public class UserService implements UserDetailsService {
         token.setToken(tokenStr);
         tokenService.saveToken(token);
 
-        String link = "http://localhost:8090/reset-password/confirm?token=" + tokenStr;
+        sendResetPasswordEmail(email,tokenStr);
 
-        emailService.sendEmail("tinafang114@gmail.com","Password Reset!","<p>Hi there :D,<p><br><p>Click the link below to reset your password:<p><br><a href="+link+">activate</a><br><p>link will expire in 15 minutes");
         return tokenStr;
     }
 
