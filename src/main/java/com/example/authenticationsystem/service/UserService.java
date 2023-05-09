@@ -57,6 +57,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    private Role checkRoleExist() {
+        Role role = new Role();
+        role.setRole("ROLE_USER");
+        return roleRepository.save(role);
+    }
+
     private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Collection <Role> roles) {
         Collection < ? extends GrantedAuthority> mapRoles = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRole()))
@@ -71,15 +77,6 @@ public class UserService implements UserDetailsService {
         }
         return user;
     }
-
-
-
-    private Role checkRoleExist() {
-        Role role = new Role();
-        role.setRole("ROLE_USER");
-        return roleRepository.save(role);
-    }
-
 
 
 
@@ -107,7 +104,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
 
-
         String tokenStr = tokenService.generateToken();
 
         Token token = new Token();
@@ -132,14 +128,6 @@ public class UserService implements UserDetailsService {
         emailService.sendEmail(email,"Verify Your Account",htmlTemplate);
     }
 
-    public void sendResetPasswordEmail(String email, String token) {
-        String link = "http://localhost:8090/reset-password/confirm?token=" + token;
-        Context context = new Context();
-        context.setVariable("link", link);
-        String htmlTemplate = emailService.buildTemplate("PasswordResetEmail", context);
-        emailService.sendEmail(email,"Password Reset",htmlTemplate);
-    }
-
     public void resendValidationEmail(String email)  {
         List<Token> tokens = tokenService.getTokensByEmail(email);
         if(!tokens.isEmpty()) {
@@ -161,6 +149,35 @@ public class UserService implements UserDetailsService {
         tokenService.saveToken(token);
 
         sendValidationEmail(email,tokenStr);
+    }
+
+    private void enableAppUser(String email) {
+        userRepository.enableUser(email);
+    }
+
+    public void confirmRegistration(String tokenStr) {
+        Token token = tokenService.getToken(tokenStr);
+
+        if (TokenPurpose.ACCOUNT_ACTIVATION.equals(token.getPurpose()) && token.getConfirmedAt() != null) {
+            throw new BadRequestException("The account associated with this email is already confirmed");
+        }
+
+
+        if (token.getExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("token expired");
+        }
+
+        tokenService.setConfirmedAt(tokenStr);
+        enableAppUser(token.getUser().getEmail());
+    }
+
+
+    public void sendResetPasswordEmail(String email, String token) {
+        String link = "http://localhost:8090/reset-password/confirm?token=" + token;
+        Context context = new Context();
+        context.setVariable("link", link);
+        String htmlTemplate = emailService.buildTemplate("PasswordResetEmail", context);
+        emailService.sendEmail(email,"Password Reset",htmlTemplate);
     }
 
     public String sendResetPasswordEmail(String email)  {
@@ -191,8 +208,6 @@ public class UserService implements UserDetailsService {
 
 
 
-
-
     public void resetPasswordConfirm(String tokenStr) {
         Token token = tokenService.getToken(tokenStr);
         if (token.getExpiredAt() == null || token.getExpiredAt().isBefore(LocalDateTime.now())) {
@@ -217,24 +232,7 @@ public class UserService implements UserDetailsService {
 
 
 
-    public void confirmRegistration(String tokenStr) {
-        Token token = tokenService.getToken(tokenStr);
-
-        if (TokenPurpose.ACCOUNT_ACTIVATION.equals(token.getPurpose()) && token.getConfirmedAt() != null) {
-            throw new BadRequestException("The account associated with this email is already confirmed");
-        }
 
 
-        if (token.getExpiredAt().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("token expired");
-        }
-
-        tokenService.setConfirmedAt(tokenStr);
-        enableAppUser(token.getUser().getEmail());
-    }
-
-    private void enableAppUser(String email) {
-        userRepository.enableUser(email);
-    }
 
 }

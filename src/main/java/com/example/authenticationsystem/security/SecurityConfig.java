@@ -1,6 +1,5 @@
 package com.example.authenticationsystem.security;
 
-//import com.example.authentication.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -81,37 +80,6 @@ public class SecurityConfig {
     }
 
 
-//    @Autowired
-//    private UserService userService;
-//
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-//    private PasswordEncoder passwordEncoder;
-
-//    public SecurityConfig(UserService userService, PasswordEncoder passwordEncoder) {
-//        this.userService = userService;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
-//
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.csrf().disable()
-//                .authorizeHttpRequests((authorize) ->
-//                        authorize.requestMatchers("/register/**").permitAll()
-//                ).formLogin(
-//                        form -> form
-//                                .loginPage("/login")
-//                                .loginProcessingUrl("/login")
-//                                .permitAll()
-//                );
-//        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
-//        return http.build();
-//    }
-
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -120,20 +88,5 @@ public class SecurityConfig {
     }
 
 
-
-//    @Bean
-//    public DaoAuthenticationProvider daoAuthenticationProvider() {
-//        DaoAuthenticationProvider provider =
-//                new DaoAuthenticationProvider();
-//        provider.setPasswordEncoder(bCryptPasswordEncoder);
-//        provider.setUserDetailsService((UserDetailsService) userService);
-//        return provider;
-//    }
-
-
 }
 
-
-//@EnableWebSecurity
-//@Configuration
-//public class SecurityConfig extends WebSecurity

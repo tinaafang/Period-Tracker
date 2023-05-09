@@ -26,7 +26,6 @@ public class JwtUtil {
         return key;
     }
 
-//    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     Key key = generalKey();
     public String createToken(Authentication authentication) {
 

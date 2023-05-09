@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>authentication</artifactId>
+    <artifactId>authentication-system</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>recipe-website</name>
-    <description>recipe-website</description>
+    <name>authentication-system</name>
+    <description>authentication-system</description>
     <properties>
         <java.version>17</java.version>
         <spring-cloud-gcp.version>4.1.3</spring-cloud-gcp.version>
