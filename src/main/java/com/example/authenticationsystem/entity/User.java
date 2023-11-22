@@ -5,14 +5,15 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USR_NUM")
+    @Column(name = "USER_ID")
     private Integer id;
 
     @NotNull
@@ -27,7 +28,7 @@ public class User {
 
     @NotNull
     @NotEmpty
-    @Column(name = "HASHED_PSWD")
+    @Column(name = "PASSWORD")
     private String password;
 
 
@@ -36,9 +37,9 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
-            name="ASSOC_USR_ROL",
-            joinColumns={@JoinColumn(name="USR_NUM", referencedColumnName="USR_NUM")},
-            inverseJoinColumns={@JoinColumn(name="ROL_NUM", referencedColumnName="ROL_NUM")})
+            name="user_role",
+            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="USER_ID")},
+            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ROLE_ID")})
     private List<Role> roles = new ArrayList<>();
 
 

@@ -4,18 +4,19 @@ import com.example.authenticationsystem.enums.TokenPurpose;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Entity(name = "TOKEN")
+@Entity(name = "tokens")
 @Table
 public class Token {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CMT_NUM")
+    @Column(name = "TOKEN_ID")
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name="USR_NUM", nullable=false, updatable=false)
+    @JoinColumn(name="USER_ID", nullable=false, updatable=false)
     private User user;
 
     @Column(name="TOKEN",nullable = false)

@@ -6,12 +6,12 @@ import java.util.List;
 
 
 @Entity
-@Table(name="ROLE")
+@Table(name="roles")
 public class Role
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ROL_NUM")
+    @Column(name="ROLE_ID")
     private Integer id;
 
     @Column(name="ROLE",nullable=false, unique=true)

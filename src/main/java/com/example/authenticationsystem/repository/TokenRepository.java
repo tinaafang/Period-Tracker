@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @Transactional(readOnly = true)
@@ -15,6 +16,6 @@ public interface TokenRepository
 
     Token findByToken(String token);
 
-    @Query("SELECT token from TOKEN token WHERE token.user.email = ?1")
+    @Query("SELECT token from tokens token WHERE token.user.email = ?1")
     List<Token> findByEmail(String email);
 }
