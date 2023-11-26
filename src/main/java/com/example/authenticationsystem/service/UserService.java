@@ -3,11 +3,9 @@ package com.example.authenticationsystem.service;
 import com.example.authenticationsystem.dto.ResetPasswordRequest;
 import com.example.authenticationsystem.dto.UserDto;
 import com.example.authenticationsystem.entity.Token;
-import com.example.authenticationsystem.entity.Role;
 import com.example.authenticationsystem.entity.User;
 import com.example.authenticationsystem.enums.TokenPurpose;
 import com.example.authenticationsystem.exceptions.BadRequestException;
-import com.example.authenticationsystem.repository.RoleRepository;
 import com.example.authenticationsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,10 +18,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -31,8 +27,6 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
 
@@ -48,27 +42,19 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email);
 
         if (user != null) {
+            ArrayList<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
+            SimpleGrantedAuthority role1 = new SimpleGrantedAuthority("ROLE_USER");
+            roles.add(role1);
             return new org.springframework.security.core.userdetails.User(user.getEmail(),
                     user.getPassword(),
                     user.isEnabled(),true,true,true,
-                    mapRolesToAuthorities(user.getRoles()));
+                    roles);
         }else{
             throw new UsernameNotFoundException("Invalid username or password.");
         }
     }
 
-    private Role checkRoleExist() {
-        Role role = new Role();
-        role.setRole("ROLE_USER");
-        return roleRepository.save(role);
-    }
 
-    private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Collection <Role> roles) {
-        Collection < ? extends GrantedAuthority> mapRoles = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRole()))
-                .collect(Collectors.toList());
-        return mapRoles;
-    }
 
     public User getUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
@@ -92,11 +78,6 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
-        Role role = roleRepository.findByRole("ROLE_ADMIN");
-        if(role == null){
-            role = checkRoleExist();
-        }
-        user.setRoles(Arrays.asList(role));
         user.setUserName(userDto.getUserName());
         user.setEmail(userDto.getEmail());
         user.setEnabled(false);
@@ -110,18 +91,20 @@ public class UserService implements UserDetailsService {
         token.setCreatedAt(LocalDateTime.now());
         token.setExpiredAt(LocalDateTime.now().plusMinutes(15));
         token.setToken(tokenStr);
-        token.setUser(user);
+        User newUser = userRepository.findByEmail(userDto.getEmail());
+
+        token.setUser(newUser);
         token.setPurpose(TokenPurpose.ACCOUNT_ACTIVATION);
 
         tokenService.saveToken(token);
 
-        sendValidationEmail(userDto.getEmail(),tokenStr);
+        sendValidationEmail(newUser.getEmail(),tokenStr);
         return tokenStr;
     }
 
 
     public void sendValidationEmail(String email, String token) {
-        String link = "http://localhost:8090/register/confirm?token=" + token;
+        String link = "http://localhost:8090/auth/register/confirm?token=" + token;
         Context context = new Context();
         context.setVariable("link", link);
         String htmlTemplate = emailService.buildTemplate("AccountValidationEmail", context);

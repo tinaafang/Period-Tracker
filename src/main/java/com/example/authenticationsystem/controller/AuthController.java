@@ -22,9 +22,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private AuthenticationManager authenticationManager;
+
 
     @Autowired
     private JwtUtil jwtTokenProvider;
@@ -43,6 +43,7 @@ public class AuthController {
         String jwt = jwtTokenProvider.createToken(authentication);
         return ResponseEntity.ok(new AuthResponseDto(jwt));
     }
+
 
 
     @PostMapping("/register")

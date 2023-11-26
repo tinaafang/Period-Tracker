@@ -27,7 +27,8 @@ public class EmailService {
             helper.setText(body, true);
         };
 
-        mailSender.send(preparator);
+        // TODO: email not working
+//        mailSender.send(preparator);
     }
 
     // Fills up the HTML file
