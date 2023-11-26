@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 
 @RestController
-@CrossOrigin(origins="*",maxAge = 4800,  allowedHeaders = "*",exposedHeaders = {})
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
@@ -62,6 +62,18 @@ public class AuthController {
     @GetMapping(path = "/register/resend")
     public void resendValidationEmail(@RequestParam String email) {
         userService.resendValidationEmail(email);
+    }
+
+    @GetMapping(path = "/get-test")
+    public String test() {
+        return "hi";
+    }
+
+    @CrossOrigin
+    @PostMapping(path = "/post-test")
+    public UserDto test2(@RequestBody UserDto userDto) {
+        String token = userService.registrationBeforeConfirm(userDto);
+        return userDto;
     }
 
     @GetMapping(path = "/reset-password")

@@ -16,7 +16,7 @@ function Register() {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Add your registration logic here
-        return helper.api("POST","/register",formData)
+        return helper.api("POST","/auth/post-test",formData)
             .then((response) => {
                 if(response) {
                     debugger;

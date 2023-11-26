@@ -1,5 +1,6 @@
 // Login.js
 import React, { useState } from 'react';
+import helper from "../helper";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -13,8 +14,13 @@ function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add your login logic here
-        console.log('Login data:', formData);
+        // Add your registration logic here
+        return helper.api("GET","/auth/get-test")
+            .then((response) => {
+                if(response) {
+                    debugger;
+                }
+            })
     };
 
     return (

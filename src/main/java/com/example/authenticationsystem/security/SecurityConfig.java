@@ -33,7 +33,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
 
         return authProvider;
     }
@@ -53,27 +53,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.headers().frameOptions().disable();
-        http.cors().and().csrf().disable();
-        http.authorizeHttpRequests()
-                .requestMatchers("/register/**","/login/**","/reset-password/**")
+//        http.headers().frameOptions().disable();
+        http.csrf(csrf -> csrf.disable());
+        http.cors(cors -> cors.disable());
+        http.sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(
+                    (request, response, authException)
+                            -> {
+                        response.sendError(
+                                HttpServletResponse.SC_CONFLICT,
+                                authException.getMessage()
+                        );
+                    }
+            ).and()
+                .authorizeHttpRequests()
+                .requestMatchers("/auth/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(
-                        (request, response, authException)
-                                -> response.sendError(
-                                HttpServletResponse.SC_CONFLICT,
-                                authException.getLocalizedMessage()
-                        )
-                )
-                .and()
-                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -84,7 +85,7 @@ public class SecurityConfig {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
 

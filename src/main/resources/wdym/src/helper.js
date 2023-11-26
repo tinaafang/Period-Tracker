@@ -1,7 +1,7 @@
 export default {
     api(method, url, body=null) {
         if (method === "GET" || method === "DELETE") {
-            return fetch(url, {
+            return fetch("http://localhost:3000"+url, {
                 method: method,
                 headers: {
                     'accept': "application/json",
@@ -20,7 +20,7 @@ export default {
                 }
             });
         } else if (method === "POST" || method === "PUT") {
-            return fetch(url, {
+            return fetch("http://localhost:3000"+url, {
                 method: method,
                 headers: {
                     'accept': "application/json",
