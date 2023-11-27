@@ -20,6 +20,7 @@ import org.thymeleaf.context.Context;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -62,6 +63,9 @@ public class UserService implements UserDetailsService {
             throw new BadRequestException("User not found");
         }
         return user;
+    }
+    public Optional<User> getUserById(Integer id) {
+        return userRepository.findById(id);
     }
 
 
@@ -198,8 +202,6 @@ public class UserService implements UserDetailsService {
         }
         token.setConfirmedAt(LocalDateTime.now());
         tokenService.saveToken(token);
-
-
     }
 
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {

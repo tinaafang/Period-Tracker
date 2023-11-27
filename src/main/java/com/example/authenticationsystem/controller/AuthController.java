@@ -47,11 +47,8 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public LinkedHashMap<String,String>  registrationBeforeConfirm(@RequestBody UserDto userDto){
-        String token = userService.registrationBeforeConfirm(userDto);
-        LinkedHashMap<String,String> tokenResponse = new LinkedHashMap<>();
-        tokenResponse.put("token",token);
-        return tokenResponse;
+    public void  registrationBeforeConfirm(@RequestBody UserDto userDto){
+        userService.registrationBeforeConfirm(userDto);
     }
 
 
@@ -60,37 +57,22 @@ public class AuthController {
         userService.confirmRegistration(token);
     }
 
-    @GetMapping(path = "/register/resend")
-    public void resendValidationEmail(@RequestParam String email) {
-        userService.resendValidationEmail(email);
+//    @GetMapping(path = "/register/resend")
+//    public void resendValidationEmail(@RequestParam String email) {
+//        userService.resendValidationEmail(email);
+//    }
+
+    @GetMapping(path = "/forgot-password")
+    public void forgotPassword(@RequestParam String email) {
+        userService.sendResetPasswordEmail(email);
     }
 
-    @GetMapping(path = "/get-test")
-    public String test() {
-        return "hi";
-    }
-
-    @CrossOrigin
-    @PostMapping(path = "/post-test")
-    public UserDto test2(@RequestBody UserDto userDto) {
-        String token = userService.registrationBeforeConfirm(userDto);
-        return userDto;
-    }
-
-    @GetMapping(path = "/reset-password")
-    public LinkedHashMap<String,String> ResetPasswordBeforeConfirm(@RequestParam String email) {
-        String token = userService.sendResetPasswordEmail(email);
-        LinkedHashMap<String,String> tokenResponse = new LinkedHashMap<>();
-        tokenResponse.put("token",token);
-        return tokenResponse;
-    }
-
-    @GetMapping(path = "/reset-password/confirm")
+    @GetMapping(path = "/forgot-password/confirm")
     public void resetPasswordConfirm(@RequestParam String token) {
         userService.resetPasswordConfirm(token);
     }
 
-    @PostMapping(path = "/reset-password/reset")
+    @PostMapping(path = "/reset-password")
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         userService.resetPassword(resetPasswordRequest);
     }

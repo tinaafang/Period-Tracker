@@ -4,7 +4,6 @@ import com.example.authenticationsystem.enums.TokenPurpose;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity(name = "tokens")
 @Table
