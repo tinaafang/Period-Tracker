@@ -5,7 +5,9 @@ export default {
                 method: method,
                 headers: {
                     'accept': "application/json",
-                    'Content-Type': "application/json"}
+                    'Content-Type': "application/json",
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                }
 
             }).then((response) =>
             {
@@ -22,7 +24,9 @@ export default {
                 method: method,
                 headers: {
                     'accept': "application/json",
-                    'Content-Type': "application/json"},
+                    'Content-Type': "application/json",
+                    'Authentication': 'Bearer ' + localStorage.getItem('jwtToken')
+                },
                 body: JSON.stringify(body)
             }).then((response) =>
             {

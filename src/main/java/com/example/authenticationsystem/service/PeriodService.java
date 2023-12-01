@@ -6,7 +6,6 @@ import com.example.authenticationsystem.exceptions.BadRequestException;
 import com.example.authenticationsystem.repository.PeriodRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -59,7 +58,11 @@ public class PeriodService {
 
     public Period updatePeriod(Period sourcePeriod) {
         validatePeriod(sourcePeriod);
-        Period actualPeriod = new Period();
+        Optional<Period> period = periodRepository.findById(sourcePeriod.getId());
+        if(period.isEmpty()) {
+            throw new BadRequestException("Period does not exist");
+        }
+        Period actualPeriod = period.get();
         actualPeriod.setStartDate(sourcePeriod.getStartDate());
         actualPeriod.setEndDate(sourcePeriod.getEndDate());
         actualPeriod.setNote(sourcePeriod.getNote());
