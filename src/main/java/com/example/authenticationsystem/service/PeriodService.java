@@ -1,5 +1,6 @@
 package com.example.authenticationsystem.service;
 
+import com.example.authenticationsystem.dto.PeriodCreateUpdate;
 import com.example.authenticationsystem.entity.Period;
 import com.example.authenticationsystem.entity.User;
 import com.example.authenticationsystem.exceptions.BadRequestException;
@@ -8,8 +9,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -21,8 +24,8 @@ public class PeriodService {
     PeriodRepository periodRepository;
 
 
-    public void validatePeriod(Period sourcePeriod) {
-        Date now = new Date();
+    public void validateDates(Period sourcePeriod) {
+        LocalDate now = LocalDate.now();
 
         if(sourcePeriod.getStartDate() == null) {
             throw new BadRequestException("Start date cannot be null");
@@ -30,45 +33,83 @@ public class PeriodService {
         if(sourcePeriod.getEndDate() == null) {
             throw new BadRequestException("End date cannot be null");
         }
-        if(sourcePeriod.getStartDate().after(sourcePeriod.getEndDate())) {
-            throw new BadRequestException("Start date cannot be later then the end date");
+//        if(sourcePeriod.getStartDate().isAfter(sourcePeriod.getEndDate())) {
+//            throw new BadRequestException(String.format("Start date (%s) cannot be later then the end date (%s)", sourcePeriod.getStartDate().toString(), sourcePeriod.getEndDate().toString()));
+//        }
+        if(sourcePeriod.getStartDate().isAfter(now)) {
+            throw new BadRequestException(String.format("Start date (%s) cannot be in the future", sourcePeriod.getStartDate().toString()));
         }
-        if(sourcePeriod.getStartDate().after(now)) {
-            throw new BadRequestException("Start date cannot be future");
-        }
-        if(sourcePeriod.getUser().getId() == null) {
-            throw new BadRequestException("User cannot be null");
-        }
-        // TODO: check for overlapping periods
-        Optional<User> user = userService.getUserById(sourcePeriod.getUser().getId());
-        if(user.isEmpty()) {
-            throw new BadRequestException("User does not exist");
-        }
-    }
-    public Period createPeriod(Period sourcePeriod) {
-        validatePeriod(sourcePeriod);
-        Period actualPeriod = new Period();
-        actualPeriod.setUser(userService.getUserById(sourcePeriod.getUser().getId().get());
-        actualPeriod.setStartDate(sourcePeriod.getStartDate());
-        actualPeriod.setEndDate(sourcePeriod.getEndDate());
-        actualPeriod.setNote(sourcePeriod.getNote());
-        periodRepository.save(actualPeriod);
-        return actualPeriod;
     }
 
-    public Period updatePeriod(Period sourcePeriod) {
-        validatePeriod(sourcePeriod);
-        Optional<Period> period = periodRepository.findById(sourcePeriod.getId());
-        if(period.isEmpty()) {
-            throw new BadRequestException("Period does not exist");
+    public Set<Period> createPeriods(PeriodCreateUpdate periodCreateUpdate) {
+        if(periodCreateUpdate.getUser().getId() == null) {
+            throw new BadRequestException("User cannot be null");
         }
-        Period actualPeriod = period.get();
+        if(periodCreateUpdate.getPeriods() == null) {
+            throw new BadRequestException("Periods cannot be null");
+        }
+
+        User user = userService.getUserById(periodCreateUpdate.getUser().getId());
+        Set<Period> actualPeriods = new HashSet<>();
+        Set<Period> periods = periodCreateUpdate.getPeriods();
+        if(!periods.isEmpty()) {
+            periods.forEach(period -> {
+                validateDates(period);
+                Period actualPeriod = new Period();
+                actualPeriod.setUser(user);
+                updateCommonProperties(period,actualPeriod);
+                periodRepository.save(actualPeriod);
+                actualPeriods.add(actualPeriod);
+            });
+        }
+        return actualPeriods;
+    }
+
+    public void updateCommonProperties(Period sourcePeriod, Period actualPeriod) {
         actualPeriod.setStartDate(sourcePeriod.getStartDate());
         actualPeriod.setEndDate(sourcePeriod.getEndDate());
         actualPeriod.setNote(sourcePeriod.getNote());
-        periodRepository.save(actualPeriod);
-        return actualPeriod;
     }
+
+
+//    public Set<Period> updatePeriods(PeriodCreateUpdate periodCreateUpdate) {
+//        if(periodCreateUpdate.getUser().getId() == null) {
+//            throw new BadRequestException("User cannot be null");
+//        }
+//        if(periodCreateUpdate.getPeriods() == null) {
+//            throw new BadRequestException("Periods cannot be null");
+//        }
+//
+//        User user = userService.getUserById(periodCreateUpdate.getUser().getId());
+//        Set<Period> actualPeriods = new HashSet<>();
+//        Set<Period> periods = periodCreateUpdate.getPeriods();
+//        if(!periods.isEmpty()) {
+//            periods.forEach(period -> {
+//                validateDates(period);
+//
+//                Optional<Period> actualPeriod = periodRepository.findById(period.getId());
+//                actualPeriod.setUser(user);
+//                updateCommonProperties(period,actualPeriod);
+//                periodRepository.save(actualPeriod);
+//                actualPeriods.add(actualPeriod);
+//            });
+//        }
+//        return actualPeriods;
+//    }
+
+//    public Period updatePeriods(Period sourcePeriod) {
+//        validateFields(sourcePeriod);
+//        Optional<Period> period = periodRepository.findById(sourcePeriod.getId());
+//        if(period.isEmpty()) {
+//            throw new BadRequestException("Period does not exist");
+//        }
+//        Period actualPeriod = period.get();
+//        actualPeriod.setStartDate(sourcePeriod.getStartDate());
+//        actualPeriod.setEndDate(sourcePeriod.getEndDate());
+//        actualPeriod.setNote(sourcePeriod.getNote());
+//        periodRepository.save(actualPeriod);
+//        return actualPeriod;
+//    }
 
     public void deletePeriod(Integer periodId) {
         Optional<Period> actualPeriod = periodRepository.findById(periodId);
@@ -86,9 +127,9 @@ public class PeriodService {
         return actualPeriod.get();
     }
 
-    public Period getPeriodsByUserId(Integer userId) {
-
-    }
+//    public Period getPeriodsByUserId(Integer userId) {
+//
+//    }
 
 
 }

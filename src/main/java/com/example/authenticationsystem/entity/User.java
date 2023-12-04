@@ -1,4 +1,6 @@
 package com.example.authenticationsystem.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -16,18 +18,15 @@ public class User {
     @Column(name = "USER_ID")
     private Integer id;
 
-    @NotNull
-    @NotEmpty
+
     @Column(name = "USERNAME")
     private String userName;
 
-    @NotNull
-    @NotEmpty
+
     @Column(name = "EMAIL",unique = true)
     private String email;
 
-    @NotNull
-    @NotEmpty
+
     @Column(name = "PASSWORD")
     private String password;
 
@@ -56,11 +55,11 @@ public class User {
         this.email = email;
     }
 
-
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
-
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }

@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import helper from "../../helper";
 import {Link} from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux'
-import {registerState} from "../../store/authSlice";
-import {updateState} from "../../store/authSlice";
 
 function Register() {
-    const state = useSelector(registerState);
-    const dispatch = useDispatch()
+    const [formData, setFormData] = useState({
+        userName: '',
+        email: '',
+        password: '',
+    });
 
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         // Add your registration logic here
-        return helper.api("POST","/auth/register",state)
+        return helper.api("POST","/auth/register",formData)
             .then((response) => {
                 if(response) {
-                    debugger;
                 }
             })
     };
@@ -32,48 +34,19 @@ function Register() {
                             <label className="form-label">
                                 Username:
                             </label>
-                            <input
-                                className="form-control"
-                                type="text" name="userName"
-                                value={state.userName}
-                                onChange={(e) =>
-                                    dispatch(updateState({
-                                        path:["register",e.target.name],
-                                        data:e.target.value}
-                                ))}
-                            />
+                            <input className="form-control" type="text" name="userName" value={formData.userName} onChange={handleChange}/>
                         </div>
                         <div className="mb-1">
                             <label className="form-label">
                                 Email:
                             </label>
-                            <input
-                                className="form-control"
-                                type="email"
-                                name="email"
-                                value={state.email}
-                                onChange={(e) =>
-                                    dispatch(updateState({
-                                        path:["register",e.target.name],
-                                        data:e.target.value}
-                                    ))}
-                            />
+                            <input className="form-control" type="email" name="email" value={formData.email} onChange={handleChange}/>
                         </div>
                         <div className="mb-1">
                             <label className="form-label">
                                 Password:
                             </label>
-                            <input
-                                className="form-control"
-                                type="password"
-                                name="password"
-                                value={state.password}
-                                onChange={(e) =>
-                                    dispatch(updateState({
-                                        path:["register",e.target.name],
-                                        data:e.target.value}
-                                    ))}
-                            />
+                            <input className="form-control" type="password" name="password" value={formData.password} onChange={handleChange}/>
                         </div>
                         <div className="justify-content-center">
                             <button className="mt-3 btn btn-primary" type="submit">Sign up</button>

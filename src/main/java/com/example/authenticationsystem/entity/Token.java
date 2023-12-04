@@ -2,6 +2,8 @@ package com.example.authenticationsystem.entity;
 
 import com.example.authenticationsystem.enums.TokenPurpose;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -18,11 +20,14 @@ public class Token {
     @JoinColumn(name="USER_ID", nullable=false, updatable=false)
     private User user;
 
+
     @Column(name="TOKEN",nullable = false)
     private String token;
 
+
     @Column(name="CREATED_AT")
     private LocalDateTime createdAt;
+
 
     @Column(name = "EXPIRED_AT")
     private LocalDateTime expiredAt;

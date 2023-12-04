@@ -1,3 +1,5 @@
+import {openAlert} from "./store/uiSlice";
+import store from "./store/store";
 export default {
     api(method, url, body=null) {
         if (method === "GET" || method === "DELETE") {
@@ -6,7 +8,7 @@ export default {
                 headers: {
                     'accept': "application/json",
                     'Content-Type': "application/json",
-                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt')
                 }
 
             }).then((response) =>
@@ -15,7 +17,7 @@ export default {
                     return response.json();
                 } else {
                     response.json().then((error) => {
-                        // store.commit("ui/OPEN_ALERT",{message:error.error,color:'red'},{root:true})
+                        store.dispatch(openAlert({message:error.error,color:'red'}))
                     });
                 }
             });
@@ -25,7 +27,7 @@ export default {
                 headers: {
                     'accept': "application/json",
                     'Content-Type': "application/json",
-                    'Authentication': 'Bearer ' + localStorage.getItem('jwtToken')
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt')
                 },
                 body: JSON.stringify(body)
             }).then((response) =>
@@ -33,8 +35,9 @@ export default {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    response.json().then((error) => {
-                        // store.commit("ui/OPEN_ALERT",{message:error.error,color:'red'},{root:true})
+                    return response.json().then((error) => {
+                        store.dispatch(openAlert({message:error.error,color:'red'}))
+                        return error;
                     });
                 }
             });

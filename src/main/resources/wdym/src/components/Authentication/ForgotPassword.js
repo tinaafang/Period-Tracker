@@ -15,7 +15,6 @@ function ForgotPassword() {
         return helper.api("GET","/auth/forgot-password",email)
             .then((response) => {
                 if(response) {
-                    debugger;
                 }
             })
     };

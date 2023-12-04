@@ -1,5 +1,6 @@
 package com.example.authenticationsystem.service;
 
+import com.example.authenticationsystem.dto.LoginResponse;
 import com.example.authenticationsystem.dto.ResetPasswordRequest;
 import com.example.authenticationsystem.dto.UserDto;
 import com.example.authenticationsystem.entity.Token;
@@ -7,9 +8,14 @@ import com.example.authenticationsystem.entity.User;
 import com.example.authenticationsystem.enums.TokenPurpose;
 import com.example.authenticationsystem.exceptions.BadRequestException;
 import com.example.authenticationsystem.repository.UserRepository;
+import com.example.authenticationsystem.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -64,9 +70,16 @@ public class UserService implements UserDetailsService {
         }
         return user;
     }
-    public Optional<User> getUserById(Integer id) {
-        return userRepository.findById(id);
+
+    public User getUserById(Integer id) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()) {
+            throw new BadRequestException("User not found");
+        }
+        return user.get();
     }
+
+
 
 
 

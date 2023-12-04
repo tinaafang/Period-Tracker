@@ -1,9 +1,14 @@
 // Login.js
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import helper from "../../helper";
 import {Link} from "react-router-dom";
+import {loginSuccess} from "../../store/userSlice";
+import {useDispatch} from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -13,13 +18,25 @@ function Login() {
         setFormData({...formData, [e.target.name]: e.target.value});
     };
 
+    // useEffect(() => {
+    //     // Simulating a login success event
+    //     const user = { id: 1, username: 'exampleUser' };
+    //
+    //     // Dispatch the loginSuccess action with the user information
+    //     dispatch(loginSuccess(user));
+    // }, [dispatch]);
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
         // Add your registration logic here
-        return helper.api("GET", "/auth/get-test")
+        return helper.api("POST", "/auth/login", formData)
             .then((response) => {
                 if (response) {
-                    debugger;
+                    localStorage.setItem("jwt",response.token);
+                    dispatch(loginSuccess(response.user));
+                    navigate('/dashboard');
                 }
             })
     };

@@ -1,14 +1,17 @@
 import {combineReducers} from "redux";
 import authSlice from "./authSlice.js"
 import {configureStore} from "@reduxjs/toolkit";
+import {userSlice} from "./userSlice";
+import periodSlice from "./periodSlice";
+import uiSlice from "./uiSlice";
 
 
 
 
 const rootReducer = combineReducers({
-    // user: usersReducer,
-    // period: periodReducer,
-    // ui: uiReducer,
+    user: userSlice.reducer,
+    period: periodSlice.reducer,
+    ui: uiSlice.reducer,
     auth: authSlice.reducer
 })
 

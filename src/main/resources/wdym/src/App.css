@@ -24,4 +24,17 @@
     cursor: pointer !important;
 }
 
+.show {
+    display: block !important;
+}
+.alert {
+    width:60%;
+    margin: auto;
+    text-align: center;
+    z-index: 99999;
+    position: absolute;
+    top:1rem;
+    right: 20%;
+}
+
 
