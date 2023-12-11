@@ -1,10 +1,9 @@
 package com.example.authenticationsystem.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity(name = "periods")
@@ -26,6 +25,12 @@ public class Period {
     @Column(name="END_DATE")
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate endDate;
+
+    @Column(name="CREATED_AT",nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name="DELETED_AT",nullable = false)
+    private LocalDateTime deletedAt;
 
     @Column(name="NOTE")
     private String note;
@@ -70,5 +75,21 @@ public class Period {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

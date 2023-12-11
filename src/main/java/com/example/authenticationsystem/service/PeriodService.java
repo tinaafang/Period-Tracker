@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -41,27 +42,27 @@ public class PeriodService {
         }
     }
 
-    public Set<Period> createPeriods(PeriodCreateUpdate periodCreateUpdate) {
-        if(periodCreateUpdate.getUser().getId() == null) {
+    public Set<Period> updatePeriods(PeriodCreateUpdate periodCreateUpdate) {
+        Integer userId = periodCreateUpdate.getUser().getId();
+        LocalDateTime now = LocalDateTime.now();
+        if(userId == null) {
             throw new BadRequestException("User cannot be null");
         }
-        if(periodCreateUpdate.getPeriods() == null) {
-            throw new BadRequestException("Periods cannot be null");
-        }
 
-        User user = userService.getUserById(periodCreateUpdate.getUser().getId());
+        User user = userService.getUserById(userId);
         Set<Period> actualPeriods = new HashSet<>();
-        Set<Period> periods = periodCreateUpdate.getPeriods();
-        if(!periods.isEmpty()) {
-            periods.forEach(period -> {
+        periodRepository.deletePrevPeriods(now,userId);
+//        Set<Period> periodsBefore = user.getPeriods();
+        periodCreateUpdate.getPeriods().forEach(period -> {
                 validateDates(period);
                 Period actualPeriod = new Period();
                 actualPeriod.setUser(user);
+                actualPeriod.setCreatedAt(now);
                 updateCommonProperties(period,actualPeriod);
                 periodRepository.save(actualPeriod);
                 actualPeriods.add(actualPeriod);
             });
-        }
+//        periodRepository.deleteAll(periodsBefore);
         return actualPeriods;
     }
 

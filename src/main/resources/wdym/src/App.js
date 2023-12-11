@@ -10,11 +10,9 @@ import Register from "./components/Authentication/Register";
 import Login from "./components/Authentication/LogIn";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
 import ResetPassword from "./components/Authentication/ResetPassword";
-import Dashboard from "./components/DashBoard/Dashboard";
 import Alert from "./components/UI/Alert";
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
-import {fetchUserByToken} from "./store/userSlice";
+import {useSelector} from "react-redux";
+import Dashboard from "./components/DashBoard/Dashboard";
 
 function AlertComponent() {
     const isAlertActive = useSelector(state => state.ui?.activeAlert);
@@ -24,23 +22,13 @@ function AlertComponent() {
         return null;
     }
 }
+function dashboardComponent(currentUser) {
+    if(currentUser) {
+        return <Route path="/dashboard" element={<Dashboard />} />
+    }
+}
 
 function App() {
-    const dispatch = useDispatch();
-    const currentUser = useSelector(state => state.user?.currentUser);
-    useEffect(() => {
-        console.log("i was here");
-        if(!currentUser) {
-            console.log("in");
-            if(localStorage.getItem("jwt")) {
-                console.log("inin");
-                dispatch(fetchUserByToken());
-            } else {
-                // todo: have to login, alert?
-            }
-        }
-    }, []);
-
     return (
         <Router>
             <div className="App">
@@ -52,7 +40,6 @@ function App() {
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/dashboard" element={<Dashboard />} />
-
 
                 </Routes>
             </div>

@@ -1,13 +1,10 @@
 package com.example.authenticationsystem.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +30,10 @@ public class User {
 
     @Column(name = "ENABLED")
     private Boolean enabled;
+
+    @OneToMany(mappedBy="user")
+//    @JsonSerialize(using = PeriodSerializer.class)
+    private Set<Period> periods;
 
 
 
@@ -68,11 +69,11 @@ public class User {
     public String getUsername() {
         return null;
     }
-
+    @JsonIgnore
     public boolean isEnabled() {
         return enabled;
     }
-
+    @JsonProperty
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
@@ -83,5 +84,14 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+    @JsonIgnore
+    public Set<Period> getPeriods() {
+        return periods;
+    }
+
+    @JsonProperty
+    public void setPeriods(Set<Period> periods) {
+        this.periods = periods;
     }
 }

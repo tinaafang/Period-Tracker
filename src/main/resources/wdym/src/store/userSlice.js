@@ -14,15 +14,12 @@ export const userSlice = createSlice({
             stateValue[_.last(action.payload.path)] = action.payload.data;
         },
         loginSuccess: (state, action) => {
-            debugger;
             state.currentUser = action.payload;
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(fetchUserByToken.fulfilled, (state, action) => {
-                // Mutate the state with the fetched data
-                console.log("fulfilled");
                 state.currentUser = action.payload;
             })
     },

@@ -31,7 +31,7 @@ public class JwtUtil {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 3600000);
+        Date expiryDate = new Date(now.getTime() + 86400000);
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())

@@ -14,7 +14,6 @@ export const uiSlice = createSlice({
             state.activeAlert = null;
         },
         openAlert:(state,action) => {
-            debugger;
             state.activeAlert = action.payload;
         }
 
