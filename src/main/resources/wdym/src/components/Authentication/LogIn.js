@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 import {loginSuccess} from "../../store/userSlice";
 import {useDispatch} from "react-redux";
 import { useNavigate } from 'react-router-dom';
+import {fetchPeriods, fetchStats} from "../../store/periodSlice";
 
 function Login() {
     const dispatch = useDispatch();
@@ -18,24 +19,16 @@ function Login() {
         setFormData({...formData, [e.target.name]: e.target.value});
     };
 
-    // useEffect(() => {
-    //     // Simulating a login success event
-    //     const user = { id: 1, username: 'exampleUser' };
-    //
-    //     // Dispatch the loginSuccess action with the user information
-    //     dispatch(loginSuccess(user));
-    // }, [dispatch]);
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // Add your registration logic here
         return helper.api("POST", "/auth/login", formData)
             .then((response) => {
                 if (response) {
                     localStorage.setItem("jwt",response.token);
                     dispatch(loginSuccess(response.user));
+                    dispatch(fetchPeriods(response.user.id));
+                    dispatch(fetchStats(response.user.id));
                     navigate('/dashboard');
                 }
             })
@@ -43,7 +36,6 @@ function Login() {
 
     const forgotPassword = (e) => {
         e.preventDefault();
-        // Add your registration logic here
         return helper.api("GET", "/auth/reset-password")
             .then((response) => {
                 if (response) {

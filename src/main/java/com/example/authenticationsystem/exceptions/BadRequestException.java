@@ -1,6 +1,6 @@
 package com.example.authenticationsystem.exceptions;
 
-public class BadRequestException extends RuntimeException{
+public class BadRequestException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public BadRequestException(String message) {

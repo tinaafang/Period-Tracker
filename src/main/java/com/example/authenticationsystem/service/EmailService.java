@@ -16,7 +16,7 @@ public class EmailService {
     @Autowired
     private TemplateEngine templateEngine; // From Thymeleaf
 
-    public void sendEmail(String toEmail,String subject,String body) {
+    public void sendEmail(String toEmail, String subject, String body) {
 
         // Start preparing the email
         MimeMessagePreparator preparator = message -> {

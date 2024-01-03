@@ -1,7 +1,7 @@
 
 import {Calendar,} from "react-multi-date-picker";
 import {useDispatch, useSelector} from "react-redux";
-import {createPeriods, fetchIntervals, fetchPeriods, setPeriods,handleFocusDateChange} from "../../store/periodSlice";
+import {createPeriods, fetchStats, setPeriods} from "../../store/periodSlice";
 
 function PeriodCalendar() {
     const dispatch = useDispatch();
@@ -12,13 +12,13 @@ function PeriodCalendar() {
     const save = () => {
         if(currentUser) {
             dispatch(createPeriods(currentUser.id)).then(() => {
-                dispatch(fetchIntervals(currentUser.id));
+                dispatch(fetchStats(currentUser.id));
             });
         }
     }
 
 
-        return <div>
+        return <div className={'period-calendar'}>
             <Calendar
                 range
                 multiple
@@ -29,7 +29,7 @@ function PeriodCalendar() {
                 onChange={(e) => {dispatch(setPeriods(e))}}
             >
                 <button
-                    className={'btn btn-primary m-1'}
+                    className={'btn btn-primary m-1 pink'}
                     onClick={() => save()}
                 >
                     save

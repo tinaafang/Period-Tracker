@@ -11,7 +11,6 @@ function ResetPassword() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add your registration logic here
         return helper.api("GET","/auth/reset-password",password)
             .then((response) => {
                 if(response) {

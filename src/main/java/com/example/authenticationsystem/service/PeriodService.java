@@ -28,16 +28,16 @@ public class PeriodService {
     public void validateDates(Period sourcePeriod) {
         LocalDate now = LocalDate.now();
 
-        if(sourcePeriod.getStartDate() == null) {
+        if (sourcePeriod.getStartDate() == null) {
             throw new BadRequestException("Start date cannot be null");
         }
-        if(sourcePeriod.getEndDate() == null) {
+        if (sourcePeriod.getEndDate() == null) {
             throw new BadRequestException("End date cannot be null");
         }
 //        if(sourcePeriod.getStartDate().isAfter(sourcePeriod.getEndDate())) {
 //            throw new BadRequestException(String.format("Start date (%s) cannot be later then the end date (%s)", sourcePeriod.getStartDate().toString(), sourcePeriod.getEndDate().toString()));
 //        }
-        if(sourcePeriod.getStartDate().isAfter(now)) {
+        if (sourcePeriod.getStartDate().isAfter(now)) {
             throw new BadRequestException(String.format("Start date (%s) cannot be in the future", sourcePeriod.getStartDate().toString()));
         }
     }
@@ -45,23 +45,23 @@ public class PeriodService {
     public Set<Period> updatePeriods(PeriodCreateUpdate periodCreateUpdate) {
         Integer userId = periodCreateUpdate.getUser().getId();
         LocalDateTime now = LocalDateTime.now();
-        if(userId == null) {
+        if (userId == null) {
             throw new BadRequestException("User cannot be null");
         }
 
         User user = userService.getUserById(userId);
         Set<Period> actualPeriods = new HashSet<>();
-        periodRepository.deletePrevPeriods(now,userId);
+        periodRepository.deletePrevPeriods(now, userId);
 //        Set<Period> periodsBefore = user.getPeriods();
         periodCreateUpdate.getPeriods().forEach(period -> {
-                validateDates(period);
-                Period actualPeriod = new Period();
-                actualPeriod.setUser(user);
-                actualPeriod.setCreatedAt(now);
-                updateCommonProperties(period,actualPeriod);
-                periodRepository.save(actualPeriod);
-                actualPeriods.add(actualPeriod);
-            });
+            validateDates(period);
+            Period actualPeriod = new Period();
+            actualPeriod.setUser(user);
+            actualPeriod.setCreatedAt(now);
+            updateCommonProperties(period, actualPeriod);
+            periodRepository.save(actualPeriod);
+            actualPeriods.add(actualPeriod);
+        });
 //        periodRepository.deleteAll(periodsBefore);
         return actualPeriods;
     }
@@ -114,7 +114,7 @@ public class PeriodService {
 
     public void deletePeriod(Integer periodId) {
         Optional<Period> actualPeriod = periodRepository.findById(periodId);
-        if(actualPeriod.isEmpty()) {
+        if (actualPeriod.isEmpty()) {
             throw new BadRequestException("Period does not exist");
         }
         periodRepository.delete(actualPeriod.get());
@@ -122,7 +122,7 @@ public class PeriodService {
 
     public Period getPeriod(Integer periodId) {
         Optional<Period> actualPeriod = periodRepository.findById(periodId);
-        if(actualPeriod.isEmpty()) {
+        if (actualPeriod.isEmpty()) {
             throw new BadRequestException("Period does not exist");
         }
         return actualPeriod.get();

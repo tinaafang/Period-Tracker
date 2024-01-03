@@ -1,6 +1,5 @@
 package com.example.authenticationsystem.service;
 
-import com.example.authenticationsystem.dto.LoginResponse;
 import com.example.authenticationsystem.dto.ResetPasswordRequest;
 import com.example.authenticationsystem.dto.UserDto;
 import com.example.authenticationsystem.entity.Token;
@@ -8,14 +7,9 @@ import com.example.authenticationsystem.entity.User;
 import com.example.authenticationsystem.enums.TokenPurpose;
 import com.example.authenticationsystem.exceptions.BadRequestException;
 import com.example.authenticationsystem.repository.UserRepository;
-import com.example.authenticationsystem.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -54,18 +48,17 @@ public class UserService implements UserDetailsService {
             roles.add(role1);
             return new org.springframework.security.core.userdetails.User(user.getEmail(),
                     user.getPassword(),
-                    user.isEnabled(),true,true,true,
+                    user.isEnabled(), true, true, true,
                     roles);
-        }else{
+        } else {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
     }
 
 
-
     public User getUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
-        if(user == null) {
+        if (user == null) {
             throw new BadRequestException("User not found");
         }
         return user;
@@ -73,17 +66,14 @@ public class UserService implements UserDetailsService {
 
     public User getUserById(Integer id) {
         Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new BadRequestException("User not found");
         }
         return user.get();
     }
 
 
-
-
-
-    public String registrationBeforeConfirm(UserDto userDto)  {
+    public String registrationBeforeConfirm(UserDto userDto) {
 
         User existingUser = userRepository.findByEmail(userDto.getEmail());
 
@@ -115,7 +105,7 @@ public class UserService implements UserDetailsService {
 
         tokenService.saveToken(token);
 
-        sendValidationEmail(newUser.getEmail(),tokenStr);
+        sendValidationEmail(newUser.getEmail(), tokenStr);
         return tokenStr;
     }
 
@@ -125,14 +115,14 @@ public class UserService implements UserDetailsService {
         Context context = new Context();
         context.setVariable("link", link);
         String htmlTemplate = emailService.buildTemplate("AccountValidationEmail", context);
-        emailService.sendEmail(email,"Verify Your Account",htmlTemplate);
+        emailService.sendEmail(email, "Verify Your Account", htmlTemplate);
     }
 
-    public void resendValidationEmail(String email)  {
+    public void resendValidationEmail(String email) {
         List<Token> tokens = tokenService.getTokensByEmail(email);
-        if(!tokens.isEmpty()) {
+        if (!tokens.isEmpty()) {
             tokens.forEach(token -> {
-                if(TokenPurpose.ACCOUNT_ACTIVATION.equals(token.getPurpose()) && token.getExpiredAt().isAfter(LocalDateTime.now())) {
+                if (TokenPurpose.ACCOUNT_ACTIVATION.equals(token.getPurpose()) && token.getExpiredAt().isAfter(LocalDateTime.now())) {
                     token.setExpiredAt(LocalDateTime.now());
                 }
             });
@@ -148,7 +138,7 @@ public class UserService implements UserDetailsService {
         token.setToken(tokenStr);
         tokenService.saveToken(token);
 
-        sendValidationEmail(email,tokenStr);
+        sendValidationEmail(email, tokenStr);
     }
 
     private void enableAppUser(String email) {
@@ -177,14 +167,14 @@ public class UserService implements UserDetailsService {
         Context context = new Context();
         context.setVariable("link", link);
         String htmlTemplate = emailService.buildTemplate("PasswordResetEmail", context);
-        emailService.sendEmail(email,"Password Reset",htmlTemplate);
+        emailService.sendEmail(email, "Password Reset", htmlTemplate);
     }
 
-    public String sendResetPasswordEmail(String email)  {
+    public String sendResetPasswordEmail(String email) {
         List<Token> tokens = tokenService.getTokensByEmail(email);
-        if(!tokens.isEmpty()) {
+        if (!tokens.isEmpty()) {
             tokens.forEach(token -> {
-                if(TokenPurpose.PASSWORD_RESET.equals(token.getPurpose()) && token.getExpiredAt().isAfter(LocalDateTime.now())) {
+                if (TokenPurpose.PASSWORD_RESET.equals(token.getPurpose()) && token.getExpiredAt().isAfter(LocalDateTime.now())) {
                     token.setExpiredAt(LocalDateTime.now());
                     tokenService.saveToken(token);
                 }
@@ -201,11 +191,10 @@ public class UserService implements UserDetailsService {
         token.setToken(tokenStr);
         tokenService.saveToken(token);
 
-        sendResetPasswordEmail(email,tokenStr);
+        sendResetPasswordEmail(email, tokenStr);
 
         return tokenStr;
     }
-
 
 
     public void resetPasswordConfirm(String tokenStr) {
@@ -227,10 +216,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
     }
-
-
-
-
 
 
 }

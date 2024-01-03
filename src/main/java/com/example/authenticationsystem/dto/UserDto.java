@@ -2,8 +2,7 @@ package com.example.authenticationsystem.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public class UserDto
-{
+public class UserDto {
     @NotEmpty(message = "Username should not be empty")
     private String userName;
     private String email;
@@ -26,7 +25,6 @@ public class UserDto
     public void setEmail(String email) {
         this.email = email;
     }
-
 
 
     public String getPassword() {

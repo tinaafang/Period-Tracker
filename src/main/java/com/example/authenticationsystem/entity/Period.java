@@ -1,4 +1,5 @@
 package com.example.authenticationsystem.entity;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity(name = "periods")
 @Table
+//@JsonSerialize(using = PeriodSerializer.class)
 public class Period {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,26 +17,25 @@ public class Period {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name="USER_ID", nullable=false, updatable=false)
+    @JoinColumn(name = "USER_ID", nullable = false, updatable = false)
     private User user;
 
-    @Column(name="START_DATE",nullable = false)
+    @Column(name = "START_DATE", nullable = false)
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate startDate;
 
-    @Column(name="END_DATE")
+    @Column(name = "END_DATE")
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate endDate;
 
-    @Column(name="CREATED_AT",nullable = false)
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name="DELETED_AT",nullable = false)
+    @Column(name = "DELETED_AT", nullable = false)
     private LocalDateTime deletedAt;
 
-    @Column(name="NOTE")
+    @Column(name = "NOTE")
     private String note;
-
 
 
     public Integer getId() {

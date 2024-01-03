@@ -11,7 +11,6 @@ function ForgotPassword() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add your registration logic here
         return helper.api("GET","/auth/forgot-password",email)
             .then((response) => {
                 if(response) {

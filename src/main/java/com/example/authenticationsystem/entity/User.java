@@ -1,7 +1,7 @@
 package com.example.authenticationsystem.entity;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -20,7 +20,7 @@ public class User {
     private String userName;
 
 
-    @Column(name = "EMAIL",unique = true)
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
 
@@ -31,12 +31,9 @@ public class User {
     @Column(name = "ENABLED")
     private Boolean enabled;
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy = "user")
 //    @JsonSerialize(using = PeriodSerializer.class)
     private Set<Period> periods;
-
-
-
 
 
     public Integer getId() {
@@ -60,6 +57,7 @@ public class User {
     public String getPassword() {
         return password;
     }
+
     @JsonProperty
     public void setPassword(String password) {
         this.password = password;
@@ -69,10 +67,12 @@ public class User {
     public String getUsername() {
         return null;
     }
+
     @JsonIgnore
     public boolean isEnabled() {
         return enabled;
     }
+
     @JsonProperty
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
@@ -85,6 +85,7 @@ public class User {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
     @JsonIgnore
     public Set<Period> getPeriods() {
         return periods;

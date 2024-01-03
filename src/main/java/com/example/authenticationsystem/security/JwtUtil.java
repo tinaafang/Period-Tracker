@@ -18,7 +18,7 @@ import java.util.Date;
 @Slf4j
 public class JwtUtil {
 
-    public SecretKey generalKey(){
+    public SecretKey generalKey() {
         String stringKey = "mySecretKeyneedsmantbytesbytesbytesbytesbytesvneirubnrwoigowkengioefjewanoifoqejgnijehebeoj";
         byte[] encodedKey = Base64.decodeBase64(stringKey);
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length,
@@ -27,6 +27,7 @@ public class JwtUtil {
     }
 
     Key key = generalKey();
+
     public String createToken(Authentication authentication) {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -53,7 +54,6 @@ public class JwtUtil {
 
     // Check if the token is valid and not expired
     public boolean validateToken(String token) {
-
         try {
             Jwts.parser().setSigningKey(key).parseClaimsJws(token);
             return true;

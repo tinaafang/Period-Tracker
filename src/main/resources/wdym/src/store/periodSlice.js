@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
+import {createAsyncThunk, createSlice, current} from '@reduxjs/toolkit'
 import _ from "lodash"
 import helper from "../helper";
 import {DateObject} from "react-multi-date-picker";
@@ -7,9 +7,8 @@ export const fetchPeriods = createAsyncThunk('period/fetchPeriods', async (perio
     return helper.api("POST", "/api/period/search", periodsSearch);
 });
 
-
-export const fetchIntervals = createAsyncThunk('period/fetchIntervals', async (userId) => {
-    return helper.api("GET", "/api/period/intervals/"+userId);
+export const fetchStats = createAsyncThunk('period/fetchStats', async (userId) => {
+    return helper.api("GET", "/api/period/stats/"+userId);
 });
 
 export const createPeriods = createAsyncThunk('period/createPeriods', async (userId,{ getState }) => {
@@ -34,13 +33,14 @@ export const periodSlice = createSlice({
     name: 'period',
     initialState: {
         periods: [],
-        intervals:[]
+        cycles:[],
+        daysUntilNextPeriod:null,
+        avgCycleLength:null,
+        avgBleedLength:null,
+        alerts:[],
+        latestPeriod:null
     },
     reducers: {
-        updateState: (state, action) => {
-            const stateValue = _.get(state, _.initial(action.payload.path));
-            stateValue[_.last(action.payload.path)] = action.payload.data;
-        },
         setPeriods:(state,action) => {
             state.periods = action.payload;
             // if double clicking the same date, remove that period
@@ -71,21 +71,41 @@ export const periodSlice = createSlice({
                             })
                         ]);
                     });
+                    state.latestPeriod = state.periods.slice(-1)[0];
                 }
             })
-            .addCase(fetchIntervals.fulfilled, (state, action) => {
+            .addCase(fetchStats.fulfilled, (state, action) => {
                 if(action.payload) {
-                    state.intervals = [];
-                    console.log(action.payload)
-                    _.forEach(action.payload, (interval,index) => {
+                    let estimatedNextCycleLength = 28;
+                    state.avgBleedLength = action.payload.avgBleedLength;
+                    state.avgCycleLength = _.meanBy(action.payload.cycles, "cycleLength");
 
-                        state.intervals.push(
-                            {...interval,
-                            x:index}
+                    if (current(state.periods) && action.payload.cycles) {
+                            state.cycles = [];
+                            _.forEach(action.payload.cycles, (cycle, index) => {
+                                state.cycles.push(
+                                    {
+                                        ...cycle,
+                                        x: index
+                                    }
+                                );
+                            });
+                            estimatedNextCycleLength = _.meanBy(action.payload.cycles.slice(-5), "cycleLength");
+                        }
+                        const lastCycleStartDate = state.latestPeriod[0].toDate();
+                        const estimatedNextPeriodStartDate = lastCycleStartDate.setDate(lastCycleStartDate.getDate() + estimatedNextCycleLength);
+                        state.daysUntilNextPeriod = Math.floor((new Date(estimatedNextPeriodStartDate) - new Date()) / (1000 * 60 * 60 * 24));
+                        state.cycles.push(
+                            {
+                                cycleStart: state.latestPeriod[0].format().toString().replaceAll("/", "-"),
+                                cycleEnd: new Date(estimatedNextPeriodStartDate).toISOString().split('T')[0],
+                                cycleLength: Math.round(estimatedNextCycleLength),
+                                x: action.payload.cycles.length,
+                                prediction: true
+                            }
                         );
-                    });
-                    // console.log(state.intervals)
-                }
+                    }
+
             })
     },
 })

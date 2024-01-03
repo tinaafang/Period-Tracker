@@ -22,11 +22,7 @@ function AlertComponent() {
         return null;
     }
 }
-function dashboardComponent(currentUser) {
-    if(currentUser) {
-        return <Route path="/dashboard" element={<Dashboard />} />
-    }
-}
+
 
 function App() {
     return (

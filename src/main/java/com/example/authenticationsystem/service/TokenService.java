@@ -20,6 +20,7 @@ public class TokenService {
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
+
     public String generateToken() {
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
@@ -32,7 +33,7 @@ public class TokenService {
 
     public Token getToken(String tokenStr) {
         Token token = tokenRepository.findByToken(tokenStr);
-        if(token== null) {
+        if (token == null) {
             throw new BadRequestException("token not found");
         }
         return token;

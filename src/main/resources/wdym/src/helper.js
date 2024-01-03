@@ -16,8 +16,9 @@ export default {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    response.json().then((error) => {
+                    return response.json().then((error) => {
                         store.dispatch(openAlert({message:error.error,color:'red'}))
+                        return error;
                     });
                 }
             });

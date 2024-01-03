@@ -3,11 +3,11 @@ package com.example.authenticationsystem.dto;
 import java.time.LocalDate;
 
 public class PeriodSearch {
-   private Integer userId;
+    private Integer userId;
 
-   private LocalDate startDate;
+    private LocalDate startDate;
 
-   private LocalDate endDate;
+    private LocalDate endDate;
 
     public Integer getUserId() {
         return userId;
