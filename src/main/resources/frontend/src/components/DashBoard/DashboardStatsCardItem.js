@@ -1,5 +1,3 @@
-
-
 function DashboardStatsCardItem(props) {
     const {title, body} = props;
     return <div className="card">

@@ -26,7 +26,6 @@ function ResetPassword() {
     return (
         <div className="container-fluid page">
             <div>
-                {/*<h2 className={"mt-5 mb-5"}>Welcome to the period app</h2>*/}
                 <div className={"auth-form"}>
                     <h4 className={"mt-3"}>Reset password</h4>
                     <form onSubmit={handleSubmit}>

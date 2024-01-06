@@ -1,6 +1,6 @@
 package com.periodtracker.controller;
 
-import com.periodtracker.dto.CycleDto;
+import com.periodtracker.dto.Cycle;
 import com.periodtracker.dto.PeriodCreateUpdateRequest;
 import com.periodtracker.dto.PeriodSearchRequest;
 import com.periodtracker.repository.PeriodRepository;
@@ -33,25 +33,20 @@ public class PeriodController {
         Date oneYearAgo = new Date(String.valueOf(calendar.getTime()));
 
         ArrayList<ArrayList> cycleStats = periodRepository.getCycleStats(userId,oneYearAgo);
-        ArrayList<CycleDto> cycleStatsJson = new ArrayList<>();
+        ArrayList<Cycle> cycleStatsJson = new ArrayList<>();
         cycleStats.forEach(cycleStat -> {
             if (cycleStat.get(0) != null && cycleStat.get(1) != null && cycleStat.get(2) != null) {
-                CycleDto cycle = new CycleDto();
+                Cycle cycle = new Cycle();
                 cycle.setCycleEnd((Date) cycleStat.get(0));
                 cycle.setCycleStart((Date) cycleStat.get(1));
                 cycle.setCycleLength((Integer) cycleStat.get(2));
                 cycleStatsJson.add(cycle);
             }
         });
-        cycleStatsJson.sort(Comparator.comparing(CycleDto::getCycleStart));
+        cycleStatsJson.sort(Comparator.comparing(Cycle::getCycleStart));
         stats.put("cycleStats", cycleStatsJson);
 
-
         ArrayList<ArrayList> periodStats = periodRepository.getPeriodStats(userId,oneYearAgo);
-//        Map<Long,Long> periodStatsJson = new HashMap<>();
-//        periodStats.forEach(periodStat -> {
-//            periodStatsJson.put((Long) periodStat.get(0),(Long) periodStat.get(1));
-//        });
         stats.put("periodStats", periodStats);
         return stats;
     }
@@ -60,12 +55,5 @@ public class PeriodController {
     public Object createPeriods(@RequestBody PeriodCreateUpdateRequest periodCreateUpdateRequest) {
         return periodService.updatePeriods(periodCreateUpdateRequest);
     }
-//
-//    @GetMapping("/intervals/{userId}")
-//    public Object getInterval(@PathVariable Integer userId) {
-//
-//        return intervals;
-//    }
-
 
 }

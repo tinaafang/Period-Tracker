@@ -28,7 +28,6 @@ public class User {
     private Boolean enabled;
 
     @OneToMany(mappedBy = "user")
-//    @JsonSerialize(using = PeriodSerializer.class)
     private Set<Period> periods;
 
 

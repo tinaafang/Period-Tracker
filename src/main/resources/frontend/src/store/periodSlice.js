@@ -126,9 +126,7 @@ export const periodSlice = createSlice({
 })
 
 export const {
-    setPeriods,
-    handleFocusDateChange
+    setPeriods
 } = periodSlice.actions
-// in the slice file. For example: `useSelector((state) => state.counter.value)`
 
 export default periodSlice;

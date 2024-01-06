@@ -26,7 +26,6 @@ export const userSlice = createSlice({
 })
 
 
-// in the slice file. For example: `useSelector((state) => state.counter.value)`
 
 export const { loginSuccess } = userSlice.actions;
 export default userSlice;

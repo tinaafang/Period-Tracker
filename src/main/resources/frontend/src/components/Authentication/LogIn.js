@@ -1,5 +1,4 @@
-// Login.js
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import helper from "../../helper";
 import {Link} from "react-router-dom";
 import {loginSuccess} from "../../store/userSlice";

@@ -10,10 +10,9 @@ import Register from "./components/Authentication/Register";
 import Login from "./components/Authentication/LogIn";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
 import ResetPassword from "./components/Authentication/ResetPassword";
-import Alert from "./components/UI/Alert";
+import Alert from "./components/ui/Alert";
 import {useSelector} from "react-redux";
 import Dashboard from "./components/DashBoard/Dashboard";
-import MyAccount from "./components/MyAccount/MyAccount";
 
 function AlertComponent() {
     const isAlertActive = useSelector(state => state.ui?.activeAlert);
@@ -37,7 +36,6 @@ function App() {
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/my-account" element={<MyAccount />} />
 
                 </Routes>
             </div>

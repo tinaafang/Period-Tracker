@@ -2,7 +2,7 @@ package com.periodtracker.dto;
 
 import java.util.Date;
 
-public class CycleDto {
+public class Cycle {
     private Date cycleStart;
     private Date cycleEnd;
     private Integer cycleLength;

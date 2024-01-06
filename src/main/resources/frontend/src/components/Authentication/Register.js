@@ -38,7 +38,6 @@ function Register() {
     return (
         <div className="container-fluid page">
             <div className="login">
-                {/*<h2 className={"mt-5 mb-5"}>Welcome to the period app</h2>*/}
                 <div className={"auth-form"}>
                     <h4 className={"mt-3"}>Register</h4>
                     <form onSubmit={handleSubmit}>
