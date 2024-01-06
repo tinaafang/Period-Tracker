@@ -25,7 +25,7 @@ const Alert = () => {
     };
 
     return (
-        <div className={`alert alert-dismissible show center-block ${colorToClassName()}`} role="alert">
+        <div className={`alert alert-dismissible mt-3 show center-block ${colorToClassName()}`} role="alert">
             {activeAlert.message}
             <button type="button" className="btn-close" onClick={() => dispatch(closeAlert())}></button>
         </div>

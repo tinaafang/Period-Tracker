@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import helper from "../../helper";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {openAlert} from "../../store/uiSlice";
+import {useDispatch} from "react-redux";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setEmail(e.target.value );
@@ -11,9 +15,11 @@ function ForgotPassword() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        return helper.api("GET","/auth/forgot-password",email)
+        return helper.api("GET","/auth/forgot-password?email="+email)
             .then((response) => {
-                if(response) {
+                if(response.ok) {
+                    dispatch(openAlert({message:"A verification email has been sent to "+email,color:'red'}));
+                    navigate("/reset-password", { state: email });
                 }
             })
     };
@@ -21,20 +27,17 @@ function ForgotPassword() {
     return (
         <div className="container-fluid page">
             <div>
-                <h2 className={"mt-5 mb-5"}>Welcome to the period app</h2>
+                {/*<h2 className={"mt-5 mb-5"}>Welcome to the period app</h2>*/}
                 <div className={"auth-form"}>
-                    <h4 className={"mt-3"}>Reset your password</h4>
+                    <h4 className={"mt-3"}>Forget password</h4>
                     <form onSubmit={handleSubmit}>
-                        <div className="mb-1">
-                            <label className="form-label">
-                                Email:
-                            </label>
-                            <input className="form-control" type="email" name="email" value={email} onChange={handleChange}/>
+                        <div className="mb-1 mt-3">
+                            <input className="form-control mt-4" type="email" name="email" value={email} onChange={handleChange} placeholder={"Email: "}/>
                         </div>
                         <div className="justify-content-center">
-                            <button className="mt-3 btn btn-primary" type="submit"><small>Send Password Reset Link</small></button>
+                            <button className="mt-3 btn btn-primary pink" type="submit"><small>Send Password Reset Link</small></button>
                             <Link className="mt-4 form-label float-end no-underline" to={"/"}>
-                                <small>Back</small>
+                                <small className={"link"}>Back</small>
                             </Link>
                         </div>
 

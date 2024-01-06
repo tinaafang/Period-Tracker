@@ -1,23 +1,53 @@
 
+
+
+
+@import url("https://fonts.googleapis.com/css?family=Bungee+Inline");
+input:-webkit-autofill {
+    -webkit-background-clip: text;
+}
+
+.stats-number{
+    font-family: 'Bungee Inline',cursive;
+    font-size: 3.3vw;
+}
+
 .App {
-    background-image: url("../public/background-image.png");
     height: 100vh;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    }
+    width: 100vw;
+}
+
+body {
+    background-color: #38373b;
+}
 
 .page{
     display: flex;
     justify-content: center;
 }
 
-.auth-form {
-    background-color: white;
-    border: 4px solid saddlebrown;
-    border-radius: 20px;
-    padding: 0% 10% 5% 10%;
+.link {
+    color: deeppink;
 }
+
+.link :hover{
+    cursor: pointer;
+}
+
+.auth-form {
+    width: 30vw;
+    margin-top: 30vh;
+    background-color: white;
+    border: 2px solid white;
+    border-radius: 20px;
+    padding: 2% 10% 5% 10%;
+}
+
+.form-control:focus {
+    border-color: hotpink;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.025), 0 0 3px hotpink;
+}
+
 
 .no-underline {
     text-decoration: none !important;
@@ -28,32 +58,54 @@
     display: block !important;
 }
 .alert {
-    width:60%;
+    width:50%;
     margin: auto;
     text-align: center;
     z-index: 99999;
     position: absolute;
     top:1rem;
-    right: 20%;
+    right: 25%;
 }
-
-
 
 .cycle-line-chart {
+    border: 1px solid rgb(0,0,0,0.175);
+    border-radius: 0.375rem;
+    padding: 0 3vh 3vh 3vh;
     background-color: white;
-    width: 100%;
-    height: 100%;
 }
 
-.period-calendar {
+.period-bar-chart {
+    border: 1px solid rgb(0,0,0,0.175);
+    border-radius: 0.375rem;
+    padding: 0 3vh 3vh 3vh;
     background-color: white;
-    width: 100%;
-    height: 100%;
+}
+
+.chart-container {
+}
+
+.stats-container {
+}
+
+.calendar-container {
+}
+
+
+.period-calendar {
+}
+
+
+.rmdp-calendar {
+    margin-left: 2vw;
+    margin-top: 0.5vw;
+}
+.rmdp-wrapper {
+    width: 100% !important;
 }
 
 .rmdp-day {
-    height: 3.2vw !important;
-    width: 3.2vw !important;
+    height: 4.1vw !important;
+    width: 4.1vw !important;
 }
 
 .rmdp-day span{
@@ -72,26 +124,28 @@
 }
 
 .rmdp-day:not(.rmdp-disabled, .rmdp-day-hidden) span:hover {
-    background-color: lightpink !important;
+    background-color: #ff9cce !important;
 }
 
 .rmdp-day.rmdp-today span {
-    background-color: rosybrown !important;
+    background-color: #ff9cce !important;
 }
 
 .rmdp-week-day {
-    color: darkred !important;
-    font-size: 1vw !important;
+    color: #ff339a !important;
+    font-size: 1.2vw !important;
     font-weight: 500;
 }
 
 .rmdp-arrow-container:hover {
-    background-color: white !important;
+    background-color: transparent !important;
+    box-shadow: 0 0 0 transparent !important;
 }
 
 .rmdp-arrow {
-    border-color: darkred !important;
+    border-color: #ff339a !important;
 }
+
 
 .pink {
     background-color: hotpink !important;

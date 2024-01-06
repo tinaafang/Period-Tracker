@@ -6,7 +6,6 @@ export const authSlice = createSlice({
     initialState: {
         register: {
             email: "",
-            userName: "",
             password:  ""
         },
         login: null,

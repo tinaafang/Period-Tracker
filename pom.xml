@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>authentication-system</artifactId>
+    <artifactId>period-tracker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>authentication-system</name>
-    <description>authentication-system</description>
+    <name>period-tracker</name>
+    <description>An app that tracks and analyzes menstrual cycle data</description>
     <properties>
         <java.version>17</java.version>
         <spring-cloud-gcp.version>4.1.3</spring-cloud-gcp.version>

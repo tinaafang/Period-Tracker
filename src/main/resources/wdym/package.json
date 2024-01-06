@@ -20,7 +20,8 @@
     "redux": "^4.2.1",
     "redux-toolkit": "^1.1.2",
     "web-vitals": "^2.1.4",
-    "react-multi-date-picker": "^4.4.1"
+    "react-multi-date-picker": "^4.4.1",
+    "resize-observer": "^1.0.4"
   },
   "scripts": {
     "start": "react-scripts start --ignore client",

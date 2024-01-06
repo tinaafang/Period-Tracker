@@ -1,5 +1,6 @@
 import {useSelector} from "react-redux";
 import DashboardStatsCardItem from "./DashboardStatsCardItem";
+import {useState} from "react";
 
 
 function nextPeriodMessage(daysUntilNextPeriod, latestPeriod) {
@@ -25,7 +26,7 @@ function nextPeriodMessage(daysUntilNextPeriod, latestPeriod) {
     } else if (daysUntilNextPeriod === 0) {
         return {
             title: "Period:",
-            body: "coming today"
+            body: "Coming Today"
         }
     }
 }
@@ -34,38 +35,46 @@ function nextPeriodMessage(daysUntilNextPeriod, latestPeriod) {
 
 
 function Stats() {
+    const [state, setState] = useState(null);
     const latestPeriod = useSelector(state => state.period.latestPeriod);
-    const daysUntilNextPeriod = useSelector(state => state.period.daysUntilNextPeriod);
-    const avgBleedLength = useSelector(state => state.period.avgBleedLength);
-    const avgCycleLength =  useSelector(state => state.period.avgCycleLength);
+    const daysUntilNextPeriod = useSelector(state => state.period.stats.daysUntilNextPeriod);
+    const avgPeriodLength = useSelector(state => state.period.stats.avgPeriodLength);
+    const avgCycleLength =  useSelector(state => state.period.stats.avgCycleLength);
+    const cycleLengthRanges =  useSelector(state => state.period.stats.cycleLengthRanges);
 
-    if(!latestPeriod || !nextPeriodMessage(daysUntilNextPeriod, latestPeriod)) {
+    if(!latestPeriod || !nextPeriodMessage(daysUntilNextPeriod, latestPeriod) || !avgPeriodLength || !avgCycleLength) {
         return <div>Loading...</div>
     }
 
     const message = nextPeriodMessage(daysUntilNextPeriod, latestPeriod);
 
-    return <div className={"card"}>
-        <div className="card-body row">
-            <div className={"col-md-4"}>
+    return <div className={"card stats"}>
+        {message && latestPeriod && avgPeriodLength && avgCycleLength && <div className="card-body">
+            <div className={""}>
             <DashboardStatsCardItem
                 title={message.title}
                 body={message.body}/>
-        </div>
-            <div className={"col-md-4"}>
+            </div>
+            <div className="">
+            <div className={"mt-3"}>
                 <DashboardStatsCardItem
-                    title={"Average Period:"}
-                    body={`${avgBleedLength.toFixed(1)} Days`}>
+                    title={"Average Period Duration:"}
+                    body={`${avgPeriodLength.toFixed(1)} Days`}>
                 </DashboardStatsCardItem>
             </div>
-            <div className={"col-md-4"}>
+            <div className={"mt-3"}>
                 <DashboardStatsCardItem
-                    title={"Average Cycle:"}
+                    title={"Average Cycle Duration:"}
                     body={`${avgCycleLength.toFixed(1)} Days`}>
                 </DashboardStatsCardItem>
+            </div><div className={"mt-3"}>
+                <DashboardStatsCardItem
+                    title={"Periods range from:"}
+                    body={`${cycleLengthRanges.min} - ${cycleLengthRanges.max} Days`}>
+                </DashboardStatsCardItem>
             </div>
-        </div>
-
+            </div>
+        </div>}
     </div>
 }
 

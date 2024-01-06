@@ -33,17 +33,20 @@ export const periodSlice = createSlice({
     name: 'period',
     initialState: {
         periods: [],
-        cycles:[],
-        daysUntilNextPeriod:null,
-        avgCycleLength:null,
-        avgBleedLength:null,
-        alerts:[],
+        cycleStats:[],
+        periodStats:[],
+        stats: {
+            daysUntilNextPeriod:null,
+            avgCycleLength:null,
+            avgPeriodLength:null,
+            cycleLengthRanges:{min: null, max: null}
+        },
         latestPeriod:null
     },
     reducers: {
         setPeriods:(state,action) => {
             state.periods = action.payload;
-            // if double clicking the same date, remove that period
+            // if user double clicks the same date, remove that period
             const currPeriod = _.last(action.payload);
             if(currPeriod?.length === 2) {
                 const start = currPeriod[0].toDate().getTime();
@@ -77,30 +80,42 @@ export const periodSlice = createSlice({
             .addCase(fetchStats.fulfilled, (state, action) => {
                 if(action.payload) {
                     let estimatedNextCycleLength = 28;
-                    state.avgBleedLength = action.payload.avgBleedLength;
-                    state.avgCycleLength = _.meanBy(action.payload.cycles, "cycleLength");
-
-                    if (current(state.periods) && action.payload.cycles) {
-                            state.cycles = [];
-                            _.forEach(action.payload.cycles, (cycle, index) => {
-                                state.cycles.push(
+                    state.stats = {};
+                    if (current(state.periods) && action.payload.periodStats) {
+                        state.periodStats = action.payload.periodStats;
+                        const avgPeriodLengthStats = _.reduce(action.payload.periodStats, (acc, periodStat) => {
+                            // acc is [total period length, total # of periods]
+                            // periodStat is [x, # of periods of length x]
+                            acc[0] += periodStat[0] * periodStat[1];
+                            acc[1] += periodStat[1];
+                            return acc;
+                        }, [0, 0]);
+                        state.stats.avgPeriodLength = avgPeriodLengthStats[0]/avgPeriodLengthStats[1];
+                    }
+                    const cycleLenghts = _.map(action.payload.cycleStats, "cycleLength");
+                    state.stats.cycleLengthRanges = {min: _.min(cycleLenghts), max: _.max(cycleLenghts)};
+                    state.stats.avgCycleLength = _.meanBy(action.payload.cycleStats, "cycleLength");
+                    if (current(state.periods) && action.payload.cycleStats) {
+                            state.cycleStats = [];
+                            _.forEach(action.payload.cycleStats, (cycle, index) => {
+                                state.cycleStats.push(
                                     {
                                         ...cycle,
                                         x: index
                                     }
                                 );
                             });
-                            estimatedNextCycleLength = _.meanBy(action.payload.cycles.slice(-5), "cycleLength");
+                            estimatedNextCycleLength = _.meanBy(action.payload.cycleStats.slice(-5), "cycleLength");
                         }
                         const lastCycleStartDate = state.latestPeriod[0].toDate();
                         const estimatedNextPeriodStartDate = lastCycleStartDate.setDate(lastCycleStartDate.getDate() + estimatedNextCycleLength);
-                        state.daysUntilNextPeriod = Math.floor((new Date(estimatedNextPeriodStartDate) - new Date()) / (1000 * 60 * 60 * 24));
-                        state.cycles.push(
+                        state.stats.daysUntilNextPeriod = Math.floor((new Date(estimatedNextPeriodStartDate) - new Date()) / (1000 * 60 * 60 * 24));
+                        state.cycleStats.push(
                             {
                                 cycleStart: state.latestPeriod[0].format().toString().replaceAll("/", "-"),
                                 cycleEnd: new Date(estimatedNextPeriodStartDate).toISOString().split('T')[0],
                                 cycleLength: Math.round(estimatedNextCycleLength),
-                                x: action.payload.cycles.length,
+                                x: action.payload.cycleStats.length,
                                 prediction: true
                             }
                         );

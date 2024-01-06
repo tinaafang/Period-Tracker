@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import helper from "../../helper";
-import {Link} from "react-router-dom";
+import {Link,useLocation} from "react-router-dom";
 
 function ResetPassword() {
+    const { state } = useLocation();
     const [password, setPassword] = useState("");
+    const [success, setSuccess] = useState(null);
 
     const handleChange = (e) => {
         setPassword(e.target.value );
@@ -11,10 +13,12 @@ function ResetPassword() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        return helper.api("GET","/auth/reset-password",password)
+        return helper.api("POST","/auth/reset-password",{email: state,password:password})
             .then((response) => {
-                if(response) {
-                    debugger;
+                if(response.ok) {
+                    setSuccess(true);
+                } else {
+                    setSuccess(false);
                 }
             })
     };
@@ -22,9 +26,9 @@ function ResetPassword() {
     return (
         <div className="container-fluid page">
             <div>
-                <h2 className={"mt-5 mb-5"}>Welcome to the period app</h2>
+                {/*<h2 className={"mt-5 mb-5"}>Welcome to the period app</h2>*/}
                 <div className={"auth-form"}>
-                    <h4 className={"mt-3"}>Reset your password</h4>
+                    <h4 className={"mt-3"}>Reset password</h4>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-1">
                             <label className="form-label">
@@ -33,10 +37,15 @@ function ResetPassword() {
                             <input className="form-control" type="password" name="password" value={password} onChange={handleChange}/>
                         </div>
                         <div className="justify-content-center">
-                            <button className="mt-3 btn btn-primary" type="submit"><small>Reset Password</small></button>
-                            <Link className="mt-4 form-label float-end no-underline" to={"/"}>
-                                <small>Success! Go to Login Page</small>
+                            <button className="mt-3 btn btn-primary pink" type="submit"><small>Reset Password</small></button>
+                            {success && <Link className="mt-4 form-label float-end no-underline" to={"/"}>
+                                <small className={"link"}>Success! Go to Login Page</small>
                             </Link>
+                            }
+                            {success === false && <div className="mt-4 form-label float-end no-underline" to={"/"}>
+                                <small className={"link"}>failed!</small>
+                            </div>
+                            }
                         </div>
 
                     </form>
