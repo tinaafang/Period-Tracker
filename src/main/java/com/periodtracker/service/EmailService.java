@@ -14,11 +14,9 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     @Autowired
-    private TemplateEngine templateEngine; // From Thymeleaf
+    private TemplateEngine templateEngine;
 
     public void sendEmail(String toEmail, String subject, String body) {
-
-        // Start preparing the email
         MimeMessagePreparator preparator = message -> {
             MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "UTF-8");
             helper.setTo(toEmail);
@@ -26,11 +24,9 @@ public class EmailService {
             helper.setText(body, true);
         };
 
-        // TODO: email not working
-//        mailSender.send(preparator);
+        mailSender.send(preparator);
     }
 
-    // Fills up the HTML file
     public String buildTemplate(String htmlFileName, Context context) {
         return templateEngine.process(htmlFileName, context);
     }

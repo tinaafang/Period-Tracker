@@ -75,9 +75,9 @@ public class AuthController {
         userService.sendResetPasswordEmail(email);
     }
 
-    @GetMapping(path = "/forgot-password/confirm")
-    public void resetPasswordConfirm(@RequestParam String token) {
-        userService.resetPasswordConfirm(token);
+    @GetMapping(path = "/forgot-password/confirm/{token}")
+    public void forgotPasswordConfirm(@PathVariable String token) {
+        userService.forgotPasswordConfirm(token);
     }
 
     @PostMapping(path = "/reset-password")

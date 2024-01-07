@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity(name = "periods")
 @Table
-//@JsonSerialize(using = PeriodSerializer.class)
 public class Period {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

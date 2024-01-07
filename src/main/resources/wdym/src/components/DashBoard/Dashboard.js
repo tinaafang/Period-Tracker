@@ -43,7 +43,7 @@ function Dashboard() {
             setHeight(calendarRef.current.clientHeight);
         });
         resizeObserver.observe(calendarRef.current);
-        return () => resizeObserver.disconnect(); // clean up
+        return () => resizeObserver.disconnect();
     }, []);
     return <div className={'clearfix m-3 mt-0container-fluid'}>
         <div className="row ms-1 me-2 " >

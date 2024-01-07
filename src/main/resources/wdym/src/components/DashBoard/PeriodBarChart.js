@@ -77,7 +77,6 @@ function PeriodBarChart() {
                         font: {
                             size: 14
                         },
-                        // callback: (value, index) => value === maxPeriodCount+1 ? ["(Counts)",value] : value
                     },
                     grid: {
                         drawTicks: false,

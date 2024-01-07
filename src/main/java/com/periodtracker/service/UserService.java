@@ -165,7 +165,7 @@ public class UserService implements UserDetailsService {
 
 
     public void sendResetPasswordEmail(String email, String token) {
-        String link = "http://localhost:8090/reset-password/confirm?token=" + token;
+        String link = "http://localhost:8090/auth/forgot-password/confirm/" + token;
         Context context = new Context();
         context.setVariable("link", link);
         String htmlTemplate = emailService.buildTemplate("PasswordResetEmail", context);
@@ -199,7 +199,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public void resetPasswordConfirm(String tokenStr) {
+    public void forgotPasswordConfirm(String tokenStr) {
         Token token = tokenService.getToken(tokenStr);
         if (token.getExpiredAt() == null || token.getExpiredAt().isBefore(LocalDateTime.now())) {
             throw new BadRequestException("invalid token");

@@ -52,7 +52,6 @@ public class JwtUtil {
         return null;
     }
 
-    // Check if the token is valid and not expired
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(key).parseClaimsJws(token);
@@ -71,7 +70,6 @@ public class JwtUtil {
         return false;
     }
 
-    // Extract the user email from the JWT token
     public String getUsername(String token) {
 
         return Jwts.parser()

@@ -48,10 +48,6 @@ public class PeriodController {
 
 
         ArrayList<ArrayList> periodStats = periodRepository.getPeriodStats(userId,oneYearAgo);
-//        Map<Long,Long> periodStatsJson = new HashMap<>();
-//        periodStats.forEach(periodStat -> {
-//            periodStatsJson.put((Long) periodStat.get(0),(Long) periodStat.get(1));
-//        });
         stats.put("periodStats", periodStats);
         return stats;
     }
@@ -60,12 +56,6 @@ public class PeriodController {
     public Object createPeriods(@RequestBody PeriodCreateUpdateRequest periodCreateUpdateRequest) {
         return periodService.updatePeriods(periodCreateUpdateRequest);
     }
-//
-//    @GetMapping("/intervals/{userId}")
-//    public Object getInterval(@PathVariable Integer userId) {
-//
-//        return intervals;
-//    }
 
 
 }
